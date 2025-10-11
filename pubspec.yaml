@@ -1,0 +1,23 @@
+name: dish_dash
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_rating_bar: ^4.0.1
+  google_fonts: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  # flutter_tinder_swipe: ^0.0.4
+  swipe_cards: ^2.0.0+1
+
+flutter:
+  uses-material-design: true
