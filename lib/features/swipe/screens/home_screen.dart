@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
-import 'package:dish_dash/main.dart'; // for ThemeService
-import '../../swipe/widgets/toggle_switch.dart';
+import 'package:dish_dash/core/widgets/toggle_switch.dart';
+import 'package:dish_dash/core/services/theme_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Use ThemeService helper
+    final isDark = ThemeService.isDark(context);
+
     // Theme-aware colors
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = isDark
         ? const Color.fromRGBO(163, 29, 29, 1)
         : const Color.fromRGBO(200, 100, 100, 1);
@@ -73,7 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
               boxShadow: [
                 if (!isDark)
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
+                    color: Colors.black.withAlpha(
+                      (0.12 * 255).round(),
+                    ), // fixed opacity
                     blurRadius: 18,
                     offset: const Offset(0, 6),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:dish_dash/core/services/theme_service.dart';
 
 // swipe screen (main one)
 class SwipeScreen extends StatefulWidget {
@@ -51,6 +52,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = ThemeService.isDark(context);
+
     return Scaffold(
       body: Column(
         children: [
@@ -61,7 +64,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
               child: SwipeCards(
                 matchEngine: _matchEngine,
                 onStackFinished: () {
-                  // show snackbar when all cards done
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Stack Finished ig")),
                   );
@@ -71,16 +73,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 itemBuilder: (context, index) {
                   return Center(
                     child: SizedBox(
-                      width: 400, // card width
-                      height: 500, // card height
+                      width: 400,
+                      height: 500,
                       child: Card(
-                        color: const Color.fromRGBO(200, 100, 100, 1),
+                        color: Theme.of(context).cardColor, // themed color
                         elevation: 8,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-
-                        // added padding so the content aint squished
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
@@ -92,7 +92,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 borderRadius: BorderRadius.circular(16),
                                 child: Image.asset(
                                   _imagePaths[index % _imagePaths.length],
-                                  // loops back if cards > imgs
                                   width: double.infinity,
                                   height: 200,
                                   fit: BoxFit.cover,
@@ -104,10 +103,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
                               // title text
                               Text(
                                 "Card ${index + 1}",
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge?.color,
                                 ),
                               ),
 
@@ -115,7 +116,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
                               // rating bar thing (just tryna test)
                               RatingBarIndicator(
-                                rating: 3.5, // hardcoded for now ig
+                                rating: 3.5,
                                 itemBuilder: (context, index) => const Icon(
                                   Icons.star,
                                   color: Colors.yellow,
@@ -128,10 +129,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
                               const SizedBox(height: 8),
 
                               // small desc or smth
-                              const Text(
+                              Text(
                                 "some random desc just to test spacing n stuff",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.color,
                                   fontSize: 16,
                                 ),
                               ),

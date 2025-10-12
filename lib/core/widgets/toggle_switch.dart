@@ -68,12 +68,9 @@ class _GelToggleSwitchState extends State<GelToggleSwitch>
                 height: 32,
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.08),
+                  color: Colors.grey.shade500,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: Colors.grey.withOpacity(0.18),
-                    width: 1.2,
-                  ),
+                  border: Border.all(color: Colors.grey.shade500, width: 1.2),
                   boxShadow: [
                     BoxShadow(
                       color: isDark
