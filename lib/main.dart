@@ -21,7 +21,7 @@ class DishDashApp extends StatelessWidget {
           theme: ThemeService.lightTheme,
           darkTheme: ThemeService.darkTheme,
           themeMode: mode,
-          home: const HomeScreen(),
+          home: const HomeScreen(), //to be replaced w login screen
         );
       },
     );

@@ -25,14 +25,11 @@ class _GelToggleSwitchState extends State<GelToggleSwitch>
       parent: _controller,
       curve: Curves.easeInOutCubic,
     );
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Sync initial position with current theme
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    _controller.value = isDark ? 1.0 : 0.0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      _controller.value = isDark ? 1.0 : 0.0;
+    });
   }
 
   @override
@@ -42,13 +39,16 @@ class _GelToggleSwitchState extends State<GelToggleSwitch>
   }
 
   void _handleTap() {
-    widget.onToggle();
-    // Play a local animation immediately for instant feedback
-    if (_controller.status == AnimationStatus.completed) {
+    final wasDark = _controller.value > 0.5;
+
+    // Animate immediately for user feedback
+    if (wasDark) {
       _controller.reverse();
     } else {
       _controller.forward();
     }
+
+    Future.delayed(const Duration(milliseconds: 50), widget.onToggle);
   }
 
   @override
@@ -74,8 +74,8 @@ class _GelToggleSwitchState extends State<GelToggleSwitch>
                   boxShadow: [
                     BoxShadow(
                       color: isDark
-                          ? Color.fromRGBO(163, 29, 29, 1)
-                          : Color.fromRGBO(200, 100, 100, 1),
+                          ? const Color.fromRGBO(163, 29, 29, 1)
+                          : const Color.fromRGBO(200, 100, 100, 1),
                       blurRadius: 10,
                       spreadRadius: 1,
                     ),
@@ -99,8 +99,8 @@ class _GelToggleSwitchState extends State<GelToggleSwitch>
                           boxShadow: [
                             BoxShadow(
                               color: isDark
-                                  ? Color.fromRGBO(163, 29, 29, 1)
-                                  : Color.fromRGBO(200, 100, 100, 1),
+                                  ? const Color.fromRGBO(163, 29, 29, 1)
+                                  : const Color.fromRGBO(200, 100, 100, 1),
                               blurRadius: 12,
                               spreadRadius: 1,
                             ),

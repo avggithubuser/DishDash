@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
 
@@ -6,7 +7,6 @@ class ThemeService {
   ThemeService._();
 
   static ValueNotifier<ThemeMode> get notifier => themeNotifier;
-
   static ThemeMode get mode => themeNotifier.value;
 
   static void setLight() => themeNotifier.value = ThemeMode.light;
@@ -14,32 +14,46 @@ class ThemeService {
   static void setSystem() => themeNotifier.value = ThemeMode.system;
 
   static void toggle() {
-    if (themeNotifier.value == ThemeMode.dark) {
-      themeNotifier.value = ThemeMode.light;
-    } else {
-      themeNotifier.value = ThemeMode.dark;
-    }
+    themeNotifier.value = themeNotifier.value == ThemeMode.dark
+        ? ThemeMode.light
+        : ThemeMode.dark;
   }
 
-  // 👇 New helper method to check if dark theme is active
   static bool isDark(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 
-  // 👇 Add your color schemes and theme data here
+  // LIGHT
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color.fromARGB(255, 255, 237, 237),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 255, 252, 240),
     cardColor: const Color.fromRGBO(200, 100, 100, 1),
     colorScheme: const ColorScheme.light(
       primary: Color.fromRGBO(200, 100, 100, 1),
       secondary: Color(0xFFE57373),
     ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Color(0xFF222222)),
-      bodyMedium: TextStyle(color: Color(0xFF444444)),
+    textTheme: TextTheme(
+      displayLarge: GoogleFonts.fraunces(
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+        color: Color.fromRGBO(246, 239, 210, 1),
+      ),
+      titleMedium: GoogleFonts.fraunces(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: Color.fromRGBO(246, 239, 210, 1),
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: Color.fromRGBO(246, 239, 210, 1),
+      ),
+      bodyMedium: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: Colors.white,
+      ),
     ),
     cardTheme: const CardThemeData(
-      // color: Color.fromRGBO(200, 100, 100, 1),
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -47,20 +61,38 @@ class ThemeService {
     ),
   );
 
+  // DARK
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF121212),
-    cardColor: const Color.fromRGBO(163, 29, 29, 1), //card color bhaa
+    scaffoldBackgroundColor: const Color.fromRGBO(15, 14, 14, 1),
+    cardColor: const Color.fromRGBO(84, 18, 18, 1),
     colorScheme: const ColorScheme.dark(
-      primary: Color.fromRGBO(163, 29, 29, 1),
-      secondary: Color(0xFFB71C1C),
+      primary: Color.fromRGBO(84, 18, 18, 1),
+      secondary: Color.fromRGBO(84, 18, 18, 1),
     ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.white),
-      bodyMedium: TextStyle(color: Color(0xFFCCCCCC)),
+    textTheme: TextTheme(
+      displayLarge: GoogleFonts.fraunces(
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      titleMedium: GoogleFonts.fraunces(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      ),
+      bodyMedium: GoogleFonts.inter(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: Color(0xFFCCCCCC),
+      ),
     ),
     cardTheme: const CardThemeData(
-      // color: Color(0xFF1F1F1F),
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
