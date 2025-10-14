@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GelToggleSwitch extends StatefulWidget {
   final VoidCallback onToggle;
@@ -68,14 +69,16 @@ class _GelToggleSwitchState extends State<GelToggleSwitch>
                 height: 32,
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade500,
+                  color: isDark
+                      ? Colors.grey.shade800.withOpacity(0.7)
+                      : Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.grey.shade500, width: 1.2),
                   boxShadow: [
                     BoxShadow(
                       color: isDark
-                          ? const Color.fromRGBO(163, 29, 29, 1)
-                          : const Color.fromRGBO(200, 100, 100, 1),
+                          ? Colors.grey.shade800.withOpacity(0.7)
+                          : Colors.white.withOpacity(0.9),
                       blurRadius: 10,
                       spreadRadius: 1,
                     ),

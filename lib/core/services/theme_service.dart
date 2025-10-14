@@ -25,7 +25,7 @@ class ThemeService {
   // LIGHT
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color.fromARGB(255, 255, 252, 240),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 218, 204, 204),
     cardColor: const Color.fromRGBO(200, 100, 100, 1),
     colorScheme: const ColorScheme.light(
       primary: Color.fromRGBO(200, 100, 100, 1),
@@ -33,7 +33,7 @@ class ThemeService {
     ),
     textTheme: TextTheme(
       displayLarge: GoogleFonts.fraunces(
-        fontSize: 36,
+        fontSize: 44,
         fontWeight: FontWeight.bold,
         color: Color.fromRGBO(246, 239, 210, 1),
       ),
@@ -43,12 +43,12 @@ class ThemeService {
         color: Color.fromRGBO(246, 239, 210, 1),
       ),
       bodyLarge: GoogleFonts.inter(
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: FontWeight.w500,
         color: Color.fromRGBO(246, 239, 210, 1),
       ),
       bodyMedium: GoogleFonts.inter(
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: FontWeight.w400,
         color: Colors.white,
       ),
@@ -64,7 +64,7 @@ class ThemeService {
   // DARK
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color.fromRGBO(15, 14, 14, 1),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
     cardColor: const Color.fromRGBO(84, 18, 18, 1),
     colorScheme: const ColorScheme.dark(
       primary: Color.fromRGBO(84, 18, 18, 1),
@@ -72,7 +72,7 @@ class ThemeService {
     ),
     textTheme: TextTheme(
       displayLarge: GoogleFonts.fraunces(
-        fontSize: 36,
+        fontSize: 44,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
@@ -82,12 +82,12 @@ class ThemeService {
         color: Colors.white,
       ),
       bodyLarge: GoogleFonts.inter(
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: FontWeight.w500,
         color: Colors.white,
       ),
       bodyMedium: GoogleFonts.inter(
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: FontWeight.w400,
         color: Color(0xFFCCCCCC),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:dish_dash/core/services/theme_service.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SwipeScreen extends StatefulWidget {
   const SwipeScreen({super.key});
@@ -50,7 +51,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           Expanded(
             child: Center(
@@ -64,8 +65,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 itemBuilder: (context, index) {
                   return Center(
                     child: SizedBox(
-                      width: 350,
-                      height: 500,
+                      width: 320.w,
+                      height: 540.h,
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -109,7 +110,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                   color: isDark
                                       ? Colors.grey.shade700.withOpacity(0.5)
                                       : Colors.grey.shade300.withOpacity(0.5),
-                                  width: 1.2,
+                                  width: 1.2.w,
                                 ),
                               ),
                               padding: const EdgeInsets.all(16),
@@ -121,12 +122,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                     borderRadius: BorderRadius.circular(16),
                                     child: Image.asset(
                                       _imagePaths[index % _imagePaths.length],
-                                      width: double.infinity,
-                                      height: 200,
+                                      width: double.infinity.w,
+                                      height: 200.h,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(height: 16.h),
                                   Text(
                                     "Card ${index + 1}",
                                     style: TextStyle(
@@ -137,7 +138,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                       ).textTheme.bodyLarge?.color,
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8.w),
                                   RatingBarIndicator(
                                     rating: 3.5,
                                     itemBuilder: (context, index) => const Icon(
@@ -148,7 +149,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                     itemSize: 30.0,
                                     direction: Axis.horizontal,
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8.h),
                                   Text(
                                     "test description test description test description test description test description test description test description test description",
                                     style: TextStyle(
@@ -175,7 +176,16 @@ class _SwipeScreenState extends State<SwipeScreen> {
             ),
           ),
 
-          const SizedBox(height: 88),
+          SizedBox(height: 20.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Icon(Icons.close, color: Colors.amberAccent, size: 24.sp),
+              Icon(Icons.bookmark, color: Colors.blueAccent, size: 24.sp),
+              Icon(Icons.favorite, color: Colors.redAccent, size: 24.sp),
+            ],
+          ),
+          SizedBox(height: 100.h),
         ],
       ),
     );
