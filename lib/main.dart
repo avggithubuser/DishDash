@@ -17,7 +17,7 @@ class DishDashApp extends StatelessWidget {
       valueListenable: ThemeService.notifier,
       builder: (_, mode, __) {
         return ScreenUtilInit(
-          designSize: const Size(390, 844), // your Figma/Sketch design size
+          designSize: const Size(390, 844), // iphone 13ish size (optimal?)
           minTextAdapt: true,
           builder: (context, child) {
             return MaterialApp(
@@ -29,7 +29,7 @@ class DishDashApp extends StatelessWidget {
               home: child,
             );
           },
-          child: const HomeScreen(), // replace with LoginScreen later if needed
+          child: const HomeScreen(), // login screen later when made
         );
       },
     );
