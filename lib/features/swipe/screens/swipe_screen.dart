@@ -1,36 +1,35 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:dish_dash/core/services/theme_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dish_dash/features/providers/restaurant_providers.dart';
 
-class SwipeScreen extends ConsumerStatefulWidget {
+class SwipeScreen extends StatefulWidget {
   const SwipeScreen({super.key});
 
   @override
   State<SwipeScreen> createState() => _SwipeScreenState();
 }
 
-class _SwipeScreenState extends ConsumerState<SwipeScreen> {
+class _SwipeScreenState extends State<SwipeScreen> {
   late MatchEngine _matchEngine;
-  List<SwipeItem> _swipeItems = [];
+  final List<SwipeItem> _swipeItems = [];
+  final List<Map<String, dynamic>> _resData = [];
 
   @override
   Widget build(BuildContext context) {
     final isDark = ThemeService.isDark(context);
     final colorScheme = Theme.of(context).colorScheme;
 
-    final restaurantsAsync = ref.watch(restaurantsStreamProvider);
-
     return Scaffold(
       body: Column(
         children: [
           SizedBox(height: 16.h),
 
-          // Icons above now
+          // Top swipe icons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -44,43 +43,73 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
 
           SizedBox(height: 20.h),
 
-          Expanded(
-            child: restaurantsAsync.when(
-              data: (restaurants) {
-                if (restaurants.isEmpty) {
-                  return const Center(
+          // 🔹 Stream from Firestore
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('restaurants')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Expanded(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return Expanded(
+                  child: Center(
                     child: Text(
-                      'No restaurants available.',
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
+                  ),
+                );
+              }
+
+              final docs = snapshot.data?.docs ?? [];
+              if (docs.isEmpty) {
+                return const Expanded(
+                  child: Center(
+                    child: Text(
+                      "No restaurants available.",
                       style: TextStyle(color: Colors.white),
                     ),
-                  );
-                }
+                  ),
+                );
+              }
 
-                // 🔹 Build SwipeItems dynamically
-                _swipeItems = restaurants
-                    .map(
-                      (r) => SwipeItem(
-                        content: Text(r.name),
-                        likeAction: () => debugPrint("Liked ${r.name}"),
-                        nopeAction: () => debugPrint("Nope ${r.name}"),
-                        superlikeAction: () =>
-                            debugPrint("Superliked ${r.name}"),
-                      ),
-                    )
-                    .toList();
+              // Populate swipe items from Firestore
+              _swipeItems.clear();
+              _resData.clear();
 
-                _matchEngine = MatchEngine(swipeItems: _swipeItems);
+              for (var doc in docs) {
+                final data = doc.data() as Map<String, dynamic>;
+                _resData.add(data);
 
-                return Center(
+                _swipeItems.add(
+                  SwipeItem(
+                    content: AutoSizeText(data['name'] ?? "Restaurant"),
+                    likeAction: () => debugPrint("Liked ${data['name']}"),
+                    nopeAction: () => debugPrint("Nope ${data['name']}"),
+                    superlikeAction: () =>
+                        debugPrint("Superliked ${data['name']}"),
+                  ),
+                );
+              }
+
+              _matchEngine = MatchEngine(swipeItems: _swipeItems);
+
+              return Expanded(
+                child: Center(
                   child: SwipeCards(
                     matchEngine: _matchEngine,
                     onStackFinished: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Stack Finished ig")),
+                        const SnackBar(content: Text("No more restaurants!")),
                       );
                     },
                     itemBuilder: (context, index) {
-                      final restaurant = restaurants[index];
+                      final data = _resData[index];
                       return Center(
                         child: SizedBox(
                           width: 320.w,
@@ -138,25 +167,36 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                                   ),
                                   padding: const EdgeInsets.all(16),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      // 🔹 Image
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(16),
-                                        child: Image.network(
-                                          restaurant.image.isNotEmpty
-                                              ? restaurant.image
-                                              : _imagePaths[index %
-                                                    _imagePaths.length],
-                                          width: double.infinity.w,
-                                          height: 200.h,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: data['imageUrl'] != null
+                                            ? Image.network(
+                                                data['imageUrl'],
+                                                width: double.infinity,
+                                                height: 200.h,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Container(
+                                                height: 200.h,
+                                                width: double.infinity,
+                                                color: Colors.grey.shade400,
+                                                child: const Center(
+                                                  child: Icon(
+                                                    Icons.image_not_supported,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
                                       ),
                                       SizedBox(height: 16.h),
-                                      Text(
-                                        restaurant.name,
+
+                                      // 🔹 Name
+                                      AutoSizeText(
+                                        data['name'] ?? "Unknown",
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -165,41 +205,68 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                                           ).textTheme.bodyLarge?.color,
                                         ),
                                       ),
-                                      SizedBox(height: 8.w),
-                                      RatingBarIndicator(
-                                        rating: restaurant.rating,
-                                        itemBuilder: (context, index) =>
-                                            const Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                            ),
-                                        itemCount: 5,
-                                        itemSize: 30.0,
-                                        direction: Axis.horizontal,
-                                      ),
+
                                       SizedBox(height: 8.h),
-                                      Text(
-                                        restaurant.description,
+
+                                      // 🔹 Rating
+                                      RatingBarIndicator(
+                                        rating:
+                                            double.tryParse(
+                                              data['rating']?.toString() ?? "0",
+                                            ) ??
+                                            0.0,
+                                        itemBuilder: (context, _) => const Icon(
+                                          Icons.star,
+                                          color: Colors.yellow,
+                                        ),
+                                        itemCount: 5,
+                                        itemSize: 28,
+                                      ),
+
+                                      SizedBox(height: 8.h),
+
+                                      // 🔹 Price Range
+                                      AutoSizeText(
+                                        "Range: ${data['priceRange'] ?? "—"}",
                                         style: TextStyle(
                                           color: Theme.of(
                                             context,
                                           ).textTheme.bodyMedium?.color,
-                                          fontSize: 16,
+                                          fontSize: 15,
                                         ),
                                       ),
+
                                       SizedBox(height: 8.h),
-                                      Wrap(
-                                        spacing: 8.w,
-                                        children: restaurant.tags
-                                            .map(
-                                              (tag) => Chip(
-                                                label: Text(tag),
-                                                backgroundColor: colorScheme
-                                                    .primary
-                                                    .withOpacity(0.2),
-                                              ),
-                                            )
-                                            .toList(),
+
+                                      // 🔹 Tags
+                                      if (data['tags'] != null)
+                                        Wrap(
+                                          spacing: 8,
+                                          children: (data['tags'] as List)
+                                              .map(
+                                                (tag) => Chip(
+                                                  label: Text(tag.toString()),
+                                                  backgroundColor: colorScheme
+                                                      .primary
+                                                      .withOpacity(0.25),
+                                                ),
+                                              )
+                                              .toList(),
+                                        ),
+
+                                      SizedBox(height: 8.h),
+
+                                      // 🔹 Description
+                                      AutoSizeText(
+                                        data['desc'] ?? "No description.",
+                                        maxLines: 3,
+                                        minFontSize: 1,
+                                        style: TextStyle(
+                                          color: Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium?.color,
+                                          fontSize: 15,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -215,16 +282,9 @@ class _SwipeScreenState extends ConsumerState<SwipeScreen> {
                     upSwipeAllowed: true,
                     fillSpace: false,
                   ),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, _) => Center(
-                child: Text(
-                  'Error: $err',
-                  style: const TextStyle(color: Colors.red),
                 ),
-              ),
-            ),
+              );
+            },
           ),
 
           SizedBox(height: 100.h),

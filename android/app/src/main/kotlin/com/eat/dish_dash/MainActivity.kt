@@ -1,4 +1,4 @@
-package com.example.dish_dash
+package com.eat.dish_dash
 
 import io.flutter.embedding.android.FlutterActivity
 

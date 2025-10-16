@@ -1,13 +1,15 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
 import 'package:dish_dash/features/saved/screens/saved_screen.dart';
 import 'package:dish_dash/core/widgets/toggle_switch.dart';
 import 'package:dish_dash/core/services/theme_service.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// Color array for tags
+// Tag colors for popup
 final List<Color> _tagColors = [
   Colors.blueAccent,
   Colors.amberAccent,
@@ -49,12 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Widget> _screens = [
-    const SwipeScreen(),
-    const SavedScreen(),
-    // RegistrationScreen(),
-    // ProfileScreen(),
-  ];
+  final List<Widget> _screens = [const SwipeScreen(), const SavedScreen()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -70,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) {
         final isDark = ThemeService.isDark(context);
         final colorScheme = Theme.of(context).colorScheme;
-
         final tags = [
           "Desi",
           "Vegan",
@@ -127,8 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-
-                // ✅ Colorful repeating tag chips
                 Wrap(
                   spacing: 10.w,
                   runSpacing: 10.h,
@@ -140,9 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 24.h),
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -171,8 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = ThemeService.isDark(context);
-
-    final primary = colorScheme.primary;
     final textColor = theme.textTheme.bodyLarge?.color;
     final background = theme.scaffoldBackgroundColor;
 
@@ -180,44 +170,41 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBody: true,
       backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: primary,
-        toolbarHeight: 110.h, // taller to fit two rows
+        backgroundColor: colorScheme.primary,
+        toolbarHeight: 110.h,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // First row: Logo + filter + toggle
+            // Row 1: Title + filter + toggle
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                AutoSizeText(
                   "DishDash",
+                  maxLines: 1,
+                  minFontSize: 18,
                   style: theme.textTheme.displayLarge?.copyWith(
                     color: textColor,
                   ),
                 ),
                 Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2.0),
-                      child: IconButton(
-                        onPressed: () {
-                          // TODO: Add tag action here
-                        },
-                        icon: const Icon(Icons.place_outlined),
-                        iconSize: 32.r,
-                        color: const Color.fromRGBO(246, 239, 210, 1),
-                        tooltip: "Location",
-                      ),
+                    IconButton(
+                      onPressed: () {
+                        // Example logout hook
+                        FirebaseAuth.instance.signOut();
+                      },
+                      icon: const Icon(Icons.exit_to_app),
+                      iconSize: 30.r,
+                      color: const Color.fromRGBO(246, 239, 210, 1),
+                      tooltip: "Sign Out",
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: IconButton(
-                        onPressed: () => _showTagsPopup(context),
-                        icon: const Icon(Icons.sort),
-                        iconSize: 32.r,
-                        color: const Color.fromRGBO(246, 239, 210, 1),
-                        tooltip: "Filter Tags",
-                      ),
+                    IconButton(
+                      onPressed: () => _showTagsPopup(context),
+                      icon: const Icon(Icons.sort),
+                      iconSize: 32.r,
+                      color: const Color.fromRGBO(246, 239, 210, 1),
+                      tooltip: "Filter Tags",
                     ),
                     GelToggleSwitch(onToggle: ThemeService.toggle),
                   ],
@@ -225,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            // Second row: Search bar
+            // Row 2: Search bar
             Row(
               children: [
                 Expanded(
@@ -267,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       body: _screens[_selectedIndex],
+
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
