@@ -47,38 +47,10 @@ class DishDashApp extends StatelessWidget {
               theme: ThemeService.lightTheme,
               darkTheme: ThemeService.darkTheme,
               themeMode: mode,
-              home: const AuthGate(),
+              home: const AuthPage(),
             );
           },
         );
-      },
-    );
-  }
-}
-
-/// Handles routing based on Firebase authentication state
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        // While checking auth state
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        // If user is logged in → go to HomeScreen
-        if (snapshot.hasData) {
-          return const HomeScreen();
-        }
-
-        // Otherwise → stay on AuthPage
-        return const AuthPage();
       },
     );
   }
