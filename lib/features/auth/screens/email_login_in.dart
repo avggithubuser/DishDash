@@ -1,9 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dish_dash/features/auth/methods/auth_methods.dart';
 import 'package:dish_dash/features/auth/widgets/button.dart';
 import 'package:dish_dash/features/auth/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailLoginIn extends StatefulWidget {
   final void Function()? onTap;
@@ -36,20 +36,20 @@ class _EmailLoginInState extends State<EmailLoginIn> {
               Column(
                 children: [
                   Center(
-                    child: AutoSizeText(
-                      "DishDash",
+                    child: Text(
+                      "DishDash.",
                       style: GoogleFonts.fraunces(
-                        fontSize: MediaQuery.of(context).size.height * 0.07,
+                        fontSize: MediaQuery.of(context).size.height * 0.05,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
-                  AutoSizeText(
-                    textAlign: TextAlign.center,
+                  Text(
                     "WELCOME BACK!",
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.fraunces(
                       color: Theme.of(context).textTheme.headlineLarge!.color,
                       fontSize: Theme.of(
@@ -87,7 +87,7 @@ class _EmailLoginInState extends State<EmailLoginIn> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        child: AutoSizeText(
+                        child: Text(
                           "Forgot Password?",
                           style: TextStyle(
                             color: Theme.of(
@@ -100,7 +100,7 @@ class _EmailLoginInState extends State<EmailLoginIn> {
                     ],
                   ),
 
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.080),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   MyButton(
                     title: "Login",
                     onTap: () async {
@@ -111,30 +111,55 @@ class _EmailLoginInState extends State<EmailLoginIn> {
                       );
                     },
                   ),
+                  SizedBox(height: 20.h),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: Text(
+                          " Register now!",
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AutoSizeText(
-                    "Don't have an account?",
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.headlineLarge!.color,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: widget.onTap,
-                    child: AutoSizeText(
-                      " Register now!",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.headlineLarge!.color,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Text(
+              //       "Don't have an account?",
+              //       style: TextStyle(
+              //         color: Theme.of(context).textTheme.headlineLarge!.color,
+              //       ),
+              //     ),
+              //     GestureDetector(
+              //       onTap: widget.onTap,
+              //       child: Text(
+              //         " Register now!",
+              //         style: TextStyle(
+              //           color: Theme.of(context).textTheme.headlineLarge!.color,
+              //           fontWeight: FontWeight.bold,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

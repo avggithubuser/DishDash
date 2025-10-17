@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,11 +14,14 @@ import 'package:dish_dash/features/home/screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
-  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize Google Sign-In
   await GoogleSignIn.instance.initialize(
     clientId: Platform.isAndroid
         ? '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com'
@@ -45,9 +49,8 @@ class DishDashApp extends StatelessWidget {
               title: 'DishDash',
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
-              darkTheme: ThemeService.darkTheme,
               themeMode: mode,
-              home: const AuthPage(),
+              home: AuthPage(),
             );
           },
         );

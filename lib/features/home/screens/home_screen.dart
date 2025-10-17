@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        final isDark = ThemeService.isDark(context);
+        // final isDark = ThemeService.isDark(context);
         final colorScheme = Theme.of(context).colorScheme;
         final tags = [
           "Desi",
@@ -90,9 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               border: Border.all(
-                color: isDark
-                    ? Colors.grey.shade700.withOpacity(0.5)
-                    : Colors.white.withOpacity(0.4),
+                color: Colors.white.withOpacity(0.4),
                 width: 1.2,
               ),
             ),
@@ -162,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = ThemeService.isDark(context);
+    // final isDark = ThemeService.isDark(context);
     final textColor = theme.textTheme.bodyLarge?.color;
     final background = theme.scaffoldBackgroundColor;
 
@@ -206,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: const Color.fromRGBO(246, 239, 210, 1),
                       tooltip: "Filter Tags",
                     ),
-                    GelToggleSwitch(onToggle: ThemeService.toggle),
+                    // GelToggleSwitch(onToggle: ThemeService.toggle),
                   ],
                 ),
               ],
@@ -219,15 +217,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     height: 40.h,
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? Colors.grey.shade800.withOpacity(0.7)
-                          : Colors.white.withOpacity(0.9),
+                      color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextField(
                       controller: _searchController,
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: isDark ? Colors.white : Colors.black87,
+                        color: Colors.black87,
                       ),
                       decoration: InputDecoration(
                         hintText: "Search Karachi's best food directory...",
@@ -265,21 +261,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 height: 72,
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.grey.shade900.withOpacity(0.6)
-                      : Colors.grey.shade50.withOpacity(0.65),
+                  color: Colors.grey.shade50.withOpacity(0.65),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isDark
-                        ? Colors.grey.shade700.withOpacity(0.5)
-                        : Colors.grey.shade300.withOpacity(0.4),
+                    color: Colors.grey.shade300.withOpacity(0.4),
                     width: 1.2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: isDark
-                          ? Colors.black.withOpacity(0.4)
-                          : Colors.grey.shade400.withOpacity(0.25),
+                      color: Colors.grey.shade400.withOpacity(0.25),
                       blurRadius: 20,
                       spreadRadius: 2,
                       offset: const Offset(0, 8),
@@ -292,12 +282,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   currentIndex: _selectedIndex,
                   onTap: _onItemTapped,
                   type: BottomNavigationBarType.fixed,
-                  selectedItemColor: isDark
-                      ? Colors.white70
-                      : colorScheme.primary,
-                  unselectedItemColor: isDark
-                      ? Colors.grey.shade500
-                      : Colors.grey.shade600,
+                  selectedItemColor: colorScheme.primary,
+                  unselectedItemColor: Colors.grey.shade600,
                   selectedIconTheme: const IconThemeData(size: 30),
                   unselectedIconTheme: const IconThemeData(size: 24),
                   selectedFontSize: 14,

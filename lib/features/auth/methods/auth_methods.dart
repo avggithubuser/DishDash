@@ -33,8 +33,7 @@ class Authentication {
 
       showDialog(
         context: context,
-        builder: (context) =>
-            Center(child: AlertDialog(title: AutoSizeText(e.toString()))),
+        builder: (context) => AlertDialog(title: Text(e.toString())),
       );
     }
   }
@@ -56,9 +55,8 @@ class Authentication {
         Navigator.of(context).pop();
         showDialog(
           context: context,
-          builder: (context) => Center(
-            child: AlertDialog(title: AutoSizeText("Passwords don't match")),
-          ),
+          builder: (context) =>
+              Center(child: AlertDialog(title: Text("Passwords don't match"))),
         );
       } else {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -85,8 +83,7 @@ class Authentication {
       print(e.toString());
       showDialog(
         context: context,
-        builder: (context) =>
-            Center(child: AlertDialog(title: AutoSizeText(e.toString()))),
+        builder: (context) => AlertDialog(title: Text(e.toString())),
       );
     }
   }
@@ -188,8 +185,7 @@ class Authentication {
       print(e.toString());
       showDialog(
         context: context,
-        builder: (context) =>
-            Center(child: AlertDialog(title: AutoSizeText(e.toString()))),
+        builder: (context) => AlertDialog(content: AutoSizeText(e.toString())),
       );
     }
   }

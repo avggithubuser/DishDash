@@ -21,7 +21,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = ThemeService.isDark(context);
+    // final isDark = ThemeService.isDark(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -151,17 +151,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    color: isDark
-                                        ? Colors.grey.shade800.withOpacity(0.35)
-                                        : Colors.white.withOpacity(0.35),
+                                    color: Colors.white.withOpacity(0.35),
                                     border: Border.all(
-                                      color: isDark
-                                          ? Colors.grey.shade700.withOpacity(
-                                              0.5,
-                                            )
-                                          : Colors.grey.shade300.withOpacity(
-                                              0.5,
-                                            ),
+                                      color: Colors.grey.shade300.withOpacity(
+                                        0.5,
+                                      ),
                                       width: 1.2.w,
                                     ),
                                   ),
