@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dish_dash/methods/firebase_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:dish_dash/core/services/theme_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SwipeScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
               if (snapshot.hasError) {
                 return Expanded(
                   child: Center(
-                    child: Text(
+                    child: AutoSizeText(
                       'Error: ${snapshot.error}',
                       style: const TextStyle(color: Colors.redAccent),
                     ),
@@ -70,7 +70,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
               if (docs.isEmpty) {
                 return const Expanded(
                   child: Center(
-                    child: Text(
+                    child: AutoSizeText(
                       "No restaurants available.",
                       style: TextStyle(color: Colors.white),
                     ),
@@ -89,10 +89,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 _swipeItems.add(
                   SwipeItem(
                     content: AutoSizeText(data['name'] ?? "Restaurant"),
-                    likeAction: () => debugPrint("Liked ${data['name']}"),
-                    nopeAction: () => debugPrint("Nope ${data['name']}"),
+                    likeAction: () =>
+                        MyMethods().rightSwipe(data['name'] as String),
+                    nopeAction: () =>
+                        MyMethods().leftSwipe(data['name'] as String),
                     superlikeAction: () =>
-                        debugPrint("Superliked ${data['name']}"),
+                        MyMethods().favourites(data['name'] as String),
                   ),
                 );
               }
@@ -150,7 +152,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 ),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(20.w),
                                     color: Colors.white.withOpacity(0.35),
                                     border: Border.all(
                                       color: Colors.grey.shade300.withOpacity(
@@ -159,14 +161,16 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                       width: 1.2.w,
                                     ),
                                   ),
-                                  padding: const EdgeInsets.all(16),
+                                  padding: EdgeInsets.all(16.w),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       // 🔹 Image
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
+                                        borderRadius: BorderRadius.circular(
+                                          16.w,
+                                        ),
                                         child: data['imageUrl'] != null
                                             ? Image.network(
                                                 data['imageUrl'],
@@ -214,7 +218,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                           color: Colors.yellow,
                                         ),
                                         itemCount: 5,
-                                        itemSize: 28,
+                                        itemSize: 28.w,
                                       ),
 
                                       SizedBox(height: 8.h),
@@ -226,7 +230,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                           color: Theme.of(
                                             context,
                                           ).textTheme.bodyMedium?.color,
-                                          fontSize: 15,
+                                          fontSize: 15.sp,
                                         ),
                                       ),
 
@@ -239,6 +243,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                           children: (data['tags'] as List)
                                               .map(
                                                 (tag) => Chip(
+                                                  side: BorderSide.none,
                                                   label: Text(tag.toString()),
                                                   backgroundColor: colorScheme
                                                       .primary
@@ -259,7 +264,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                           color: Theme.of(
                                             context,
                                           ).textTheme.bodyMedium?.color,
-                                          fontSize: 15,
+                                          fontSize: 15.sp,
                                         ),
                                       ),
                                     ],

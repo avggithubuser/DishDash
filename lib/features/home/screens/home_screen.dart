@@ -1,13 +1,12 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dish_dash/features/reservations/screens/reservations_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
 import 'package:dish_dash/features/saved/screens/saved_screen.dart';
-import 'package:dish_dash/core/widgets/toggle_switch.dart';
-import 'package:dish_dash/core/services/theme_service.dart';
 
 // Tag colors for popup
 final List<Color> _tagColors = [
@@ -51,7 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Widget> _screens = [const SwipeScreen(), const SavedScreen()];
+  final List<Widget> _screens = [
+    const SwipeScreen(),
+    const SavedScreen(),
+    const ReservationsScreen(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -59,101 +62,110 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _showTagsPopup(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        // final isDark = ThemeService.isDark(context);
-        final colorScheme = Theme.of(context).colorScheme;
-        final tags = [
-          "Desi",
-          "Vegan",
-          "Fast Food",
-          "Chinese",
-          "Healthy",
-          "Dessert",
-        ];
+  void _showTagsPopup(BuildContext context) async {
+    try {
+      // get all tags from db
+      final snapshot = await FirebaseFirestore.instance
+          .collection('restaurants')
+          .get();
 
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  colorScheme.primary.withOpacity(0.2),
-                  colorScheme.secondary.withOpacity(0.2),
+      final allTags = <String>{};
+
+      for (var doc in snapshot.docs) {
+        final tagsData = List<String>.from(doc['tags'] ?? []);
+        allTags.addAll(tagsData);
+      }
+
+      final tags = allTags.toList();
+
+      //
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) {
+          // final isDark = ThemeService.isDark(context);
+          final colorScheme = Theme.of(context).colorScheme;
+
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    colorScheme.primary.withOpacity(0.2),
+                    colorScheme.secondary.withOpacity(0.2),
+                  ],
+                ),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.4),
+                  width: 1.2,
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40.w,
+                      height: 5.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  Center(
+                    child: Text(
+                      "Select Tags",
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Wrap(
+                    spacing: 10.w,
+                    runSpacing: 10.h,
+                    children: List.generate(
+                      tags.length,
+                      (index) => _tagChip(
+                        tags[index],
+                        _tagColors[index % _tagColors.length],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary.withOpacity(0.8),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: AutoSizeText("Apply"),
+                    ),
+                  ),
                 ],
               ),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.4),
-                width: 1.2,
-              ),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40.w,
-                    height: 5.h,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                Center(
-                  child: Text(
-                    "Select Tags",
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Wrap(
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: List.generate(
-                    tags.length,
-                    (index) => _tagChip(
-                      tags[index],
-                      _tagColors[index % _tagColors.length],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 24.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary.withOpacity(0.8),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Apply"),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    } catch (e) {}
   }
 
   @override
