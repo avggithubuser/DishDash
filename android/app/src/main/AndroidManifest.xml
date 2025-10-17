@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Internet permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:label="dish_dash"
         android:name="${applicationName}"
@@ -27,29 +31,24 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <meta-data
-          android:name="io.flutter.embedding.android.NormalTheme"
-          android:resource="@style/NormalTheme"
-          />
+            android:name="io.flutter.embedding.android.NormalTheme"
+            android:resource="@style/NormalTheme"
+            />
         <meta-data
-          android:name="com.google.android.gms.client_id"
-          android:value="42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com"
-          />
+            android:name="com.google.android.gms.client_id"
+            android:value="42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com"
+            />
         <meta-data
-          android:name="com.facebook.sdk.ApplicationId"
-          android:value="@string/facebook_app_id"
-          />
-
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"
+            />
         <meta-data
-          android:name="com.facebook.sdk.ClientToken"
-          android:value="@string/facebook_client_token"
-          />
-
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"
+            />
     </application>
-    <!-- Required to query activities that can process text, see:
-         https://developer.android.com/training/package-visibility and
-         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
 
-         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <!-- Required to query activities that can process text -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>

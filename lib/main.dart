@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,11 +14,14 @@ import 'package:dish_dash/features/home/screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
-  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize Google Sign-In
   await GoogleSignIn.instance.initialize(
     clientId: Platform.isAndroid
         ? '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com'
@@ -45,40 +49,11 @@ class DishDashApp extends StatelessWidget {
               title: 'DishDash',
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
-              darkTheme: ThemeService.darkTheme,
               themeMode: mode,
-              home: const AuthGate(),
+              home: AuthPage(),
             );
           },
         );
-      },
-    );
-  }
-}
-
-/// Handles routing based on Firebase authentication state
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        // While checking auth state
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        // If user is logged in → go to HomeScreen
-        if (snapshot.hasData) {
-          return const HomeScreen();
-        }
-
-        // Otherwise → stay on AuthPage
-        return const AuthPage();
       },
     );
   }

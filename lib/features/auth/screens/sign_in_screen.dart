@@ -4,6 +4,8 @@ import 'package:dish_dash/features/auth/screens/email_screen_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:dish_dash/core/services/theme_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,18 +32,20 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
+                mainAxisAlignment:
+                    MainAxisAlignment.start, // vertical alignment
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // horizontal alignment
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height * 0.09),
 
-                  Center(
-                    child: AutoSizeText(
-                      "DishDash",
-                      style: GoogleFonts.fraunces(
-                        fontSize: MediaQuery.of(context).size.height * 0.07,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
+                  AutoSizeText(
+                    "Dish",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  AutoSizeText(
+                    "Dash.",
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
               ),

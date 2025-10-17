@@ -42,9 +42,9 @@ class _EmailSignUpState extends State<EmailSignUp> {
                   children: [
                     Center(
                       child: AutoSizeText(
-                        "DishDash",
+                        "DishDash.",
                         style: GoogleFonts.fraunces(
-                          fontSize: MediaQuery.of(context).size.height * 0.07,
+                          fontSize: MediaQuery.of(context).size.height * 0.03,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.primary,
                         ),
