@@ -63,6 +63,7 @@ class Authentication {
           email: email,
           password: password,
         );
+
         String? uid = FirebaseAuth.instance.currentUser!.uid;
         await FirebaseFirestore.instance.collection("users").doc(uid).set({
           "username": username,
@@ -91,6 +92,11 @@ class Authentication {
 
   // google and facebook
   Future<void> otherSignIn(String name, BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => Center(child: CircularProgressIndicator()),
+    );
+
     try {
       if (name == "Google") {
         final GoogleSignInAccount? user = await GoogleSignIn.instance
@@ -106,7 +112,8 @@ class Authentication {
           final accessToken = authorization?.accessToken;
           //
           // Obtain the auth details from the Google account
-          final GoogleSignInAuthentication googleAuth = user.authentication;
+          final GoogleSignInAuthentication googleAuth =
+              await user.authentication;
           // Create a new credential for Firebase
           final credential = GoogleAuthProvider.credential(
             idToken: googleAuth.idToken,
@@ -115,28 +122,28 @@ class Authentication {
 
           // Sign in to Firebase with the Google credential
           await FirebaseAuth.instance.signInWithCredential(credential);
-          // Navigator.of(context).pop();
+          Navigator.of(context).pop();
 
-          //
-          String? uid =
-              FirebaseAuth.instance.currentUser!.uid; // unique id for docID
           // Check if user exists in Firestore
           final userDoc = await FirebaseFirestore.instance
               .collection("users")
-              .doc(uid)
+              .doc(user.email)
               .get();
 
           if (!userDoc.exists) {
             // Add new user if doesn't exist
-            await FirebaseFirestore.instance.collection("users").doc(uid).set({
-              "username": user.displayName,
-              "email": user.email,
-              "favourites": [],
-              "rightSwipes": [],
-              "leftSwipes": [],
-              "reservationsHistory": [],
-              "currentReservations": [],
-            });
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(user.email)
+                .set({
+                  "username": user.displayName,
+                  "email": user.email,
+                  "favourites": [],
+                  "rightSwipes": [],
+                  "leftSwipes": [],
+                  "reservationsHistory": [],
+                  "currentReservations": [],
+                });
           }
         }
       }
@@ -152,26 +159,27 @@ class Authentication {
           // pop loading
           Navigator.of(context).pop();
 
-          String? uid = await FirebaseAuth.instance.currentUser!.uid;
-
           final userData = await FacebookAuth.instance.getUserData();
           // Check if user exists in Firestore
           final userDoc = await FirebaseFirestore.instance
               .collection("users")
-              .doc(uid)
+              .doc(userData['email'])
               .get();
 
           if (!userDoc.exists) {
             // Add new user if doesn't exist
-            await FirebaseFirestore.instance.collection("users").doc(uid).set({
-              "username": userData['name'],
-              "email": userData['email'],
-              "favourites": [],
-              "rightSwipes": [],
-              "leftSwipes": [],
-              "reservationsHistory": [],
-              "currentReservations": [],
-            });
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(userData['email'])
+                .set({
+                  "username": userData['name'],
+                  "email": userData['email'],
+                  "favourites": [],
+                  "rightSwipes": [],
+                  "leftSwipes": [],
+                  "reservationsHistory": [],
+                  "currentReservations": [],
+                });
           }
         }
       }
