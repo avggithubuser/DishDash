@@ -54,7 +54,7 @@ class ThemeService {
         color: Color.fromRGBO(246, 239, 210, 1),
       ),
       bodyMedium: GoogleFonts.inter(
-        fontSize: 14.sp,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w400,
         color: Colors.white,
       ),

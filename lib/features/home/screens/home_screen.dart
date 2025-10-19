@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dish_dash/features/reservations/screens/reservations_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
@@ -64,27 +64,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showTagsPopup(BuildContext context) async {
     try {
-      // get all tags from db
+      // ORIGINAL FIREBASE CODE (COMMENTED OUT)
+      /*
       final snapshot = await FirebaseFirestore.instance
           .collection('restaurants')
           .get();
 
       final allTags = <String>{};
-
       for (var doc in snapshot.docs) {
         final tagsData = List<String>.from(doc['tags'] ?? []);
         allTags.addAll(tagsData);
       }
 
       final tags = allTags.toList();
+      */
 
-      //
+      // 🔹 OFFLINE FALLBACK (for working without Firebase)
+      final tags = [
+        'Burgers',
+        'Pizza',
+        'Sushi',
+        'Café',
+        'Desi',
+        'Chinese',
+        'BBQ',
+        'Vegan',
+        'Breakfast',
+      ];
+
       showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
         builder: (context) {
-          // final isDark = ThemeService.isDark(context);
           final colorScheme = Theme.of(context).colorScheme;
 
           return BackdropFilter(
@@ -165,14 +177,15 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       );
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("Error in _showTagsPopup: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    // final isDark = ThemeService.isDark(context);
     final textColor = theme.textTheme.bodyLarge?.color;
     final background = theme.scaffoldBackgroundColor;
 
@@ -201,8 +214,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        // Example logout hook
-                        FirebaseAuth.instance.signOut();
+                        // 🔹 Firebase logout (commented)
+                        // FirebaseAuth.instance.signOut();
+
+                        // Offline mode message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Offline mode: Sign-out disabled"),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.exit_to_app),
                       iconSize: 30.r,
@@ -216,7 +236,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: const Color.fromRGBO(246, 239, 210, 1),
                       tooltip: "Filter Tags",
                     ),
-                    // GelToggleSwitch(onToggle: ThemeService.toggle),
                   ],
                 ),
               ],
@@ -227,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: Container(
-                    height: 40.h,
+                    height: 36.h, // sweet spot: not too tall or squished
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(12),
@@ -236,22 +255,34 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: _searchController,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: Colors.black87,
+                        fontSize:
+                            13.sp, // slightly smaller to balance with icon
                       ),
                       decoration: InputDecoration(
+                        isDense: true,
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.grey.shade500,
+                            size: 18.sp,
+                          ),
+                        ),
+                        prefixIconConstraints: BoxConstraints(
+                          minWidth: 36.w,
+                          minHeight: 20.h,
+                        ),
                         hintText: "Search Karachi's best food directory...",
                         hintStyle: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.grey.shade400,
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey.shade500,
+                          // fontSize: 13.sp,
                         ),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                        contentPadding: EdgeInsets.only(
+                          bottom: 5.h,
+                          top: 5.h,
+                        ), // centers text perfectly
                       ),
-                      onChanged: (query) {
-                        // TODO: implement search/filter logic
-                      },
                     ),
                   ),
                 ),

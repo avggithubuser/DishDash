@@ -50,7 +50,7 @@ class DishDashApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
               themeMode: mode,
-              home: AuthPage(),
+              home: HomeScreen(),
             );
           },
         );
