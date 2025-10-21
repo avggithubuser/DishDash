@@ -118,18 +118,14 @@ class _EmailLoginInState extends State<EmailLoginIn> {
                     children: [
                       Text(
                         "Don't have an account?",
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                        ),
+                        style: TextStyle(color: Colors.black),
                       ),
                       GestureDetector(
                         onTap: widget.onTap,
                         child: Text(
                           " Register now!",
                           style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium!.color,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

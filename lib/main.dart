@@ -4,12 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import 'package:dish_dash/core/services/theme_service.dart';
 import 'package:dish_dash/firebase_options.dart';
-import 'package:dish_dash/features/auth/methods/auth_page.dart';
 import 'package:dish_dash/features/home/screens/home_screen.dart';
 
 Future<void> main() async {

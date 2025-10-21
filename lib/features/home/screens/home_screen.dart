@@ -1,46 +1,26 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dish_dash/features/home/screens/search_screen.dart';
+import 'package:dish_dash/features/profile/screens/profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dish_dash/features/reservations/screens/reservations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
 import 'package:dish_dash/features/saved/screens/saved_screen.dart';
 
-// Tag colors for popup
-final List<Color> _tagColors = [
-  Colors.blueAccent,
-  Colors.amberAccent,
-  Colors.greenAccent,
-  Colors.pinkAccent,
-  Colors.orangeAccent,
-  Colors.purpleAccent,
-  Colors.cyanAccent,
-];
-
-Widget _tagChip(String label, Color color) {
-  return FilterChip(
-    label: Text(
-      label,
-      style: TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
-    ),
-    backgroundColor: color.withOpacity(0.25),
-    selectedColor: color.withOpacity(0.55),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12.r),
-      side: BorderSide(color: color.withOpacity(0.4)),
-    ),
-    onSelected: (bool selected) {},
-  );
-}
-
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  String? searchedRestaurant;
+  Map<String, Set<String>>? selectedFilters;
+  List<String>? priceTags;
+
+  HomeScreen({
+    super.key,
+    this.searchedRestaurant,
+    this.priceTags,
+    this.selectedFilters,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -48,138 +28,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final TextEditingController _searchController = TextEditingController();
-
-  final List<Widget> _screens = [
-    const SwipeScreen(),
-    const SavedScreen(),
-    const ReservationsScreen(),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-  }
-
-  void _showTagsPopup(BuildContext context) async {
-    try {
-      // ORIGINAL FIREBASE CODE (COMMENTED OUT)
-      /*
-      final snapshot = await FirebaseFirestore.instance
-          .collection('restaurants')
-          .get();
-
-      final allTags = <String>{};
-      for (var doc in snapshot.docs) {
-        final tagsData = List<String>.from(doc['tags'] ?? []);
-        allTags.addAll(tagsData);
-      }
-
-      final tags = allTags.toList();
-      */
-
-      // 🔹 OFFLINE FALLBACK (for working without Firebase)
-      final tags = [
-        'Burgers',
-        'Pizza',
-        'Sushi',
-        'Café',
-        'Desi',
-        'Chinese',
-        'BBQ',
-        'Vegan',
-        'Breakfast',
-      ];
-
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        builder: (context) {
-          final colorScheme = Theme.of(context).colorScheme;
-
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    colorScheme.primary.withOpacity(0.2),
-                    colorScheme.secondary.withOpacity(0.2),
-                  ],
-                ),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.4),
-                  width: 1.2,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40.w,
-                      height: 5.h,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                  Center(
-                    child: Text(
-                      "Select Tags",
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Wrap(
-                    spacing: 10.w,
-                    runSpacing: 10.h,
-                    children: List.generate(
-                      tags.length,
-                      (index) => _tagChip(
-                        tags[index],
-                        _tagColors[index % _tagColors.length],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 24.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary.withOpacity(0.8),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      child: AutoSizeText("Apply"),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      debugPrint("Error in _showTagsPopup: $e");
-    }
   }
 
   @override
@@ -188,6 +41,16 @@ class _HomeScreenState extends State<HomeScreen> {
     final colorScheme = theme.colorScheme;
     final textColor = theme.textTheme.bodyLarge?.color;
     final background = theme.scaffoldBackgroundColor;
+    final List<Widget> _screens = [
+      SwipeScreen(
+        matchName: widget.searchedRestaurant ?? '',
+        priceTags: widget.priceTags ?? [],
+        selectedFilters: widget.selectedFilters ?? {},
+      ),
+      const SavedScreen(),
+      const ReservationsScreen(),
+      const ProfileScreen(),
+    ];
 
     return Scaffold(
       extendBody: true,
@@ -215,27 +78,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     IconButton(
                       onPressed: () {
                         // 🔹 Firebase logout (commented)
-                        // FirebaseAuth.instance.signOut();
+                        FirebaseAuth.instance.signOut();
 
                         // Offline mode message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Offline mode: Sign-out disabled"),
-                          ),
-                        );
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   const SnackBar(
+                        //     content: Text("Offline mode: Sign-out disabled"),
+                        //   ),
+                        // );
                       },
                       icon: const Icon(Icons.exit_to_app),
                       iconSize: 30.r,
                       color: const Color.fromRGBO(246, 239, 210, 1),
                       tooltip: "Sign Out",
                     ),
-                    IconButton(
-                      onPressed: () => _showTagsPopup(context),
-                      icon: const Icon(Icons.sort),
-                      iconSize: 32.r,
-                      color: const Color.fromRGBO(246, 239, 210, 1),
-                      tooltip: "Filter Tags",
-                    ),
+                    // IconButton(
+                    //   onPressed: () => _showTagsPopup(context),
+                    //   icon: const Icon(Icons.sort),
+                    //   iconSize: 32.r,
+                    //   color: const Color.fromRGBO(246, 239, 210, 1),
+                    //   tooltip: "Filter Tags",
+                    // ),
                   ],
                 ),
               ],
@@ -245,43 +108,36 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 36.h, // sweet spot: not too tall or squished
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.black87,
-                        fontSize:
-                            13.sp, // slightly smaller to balance with icon
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => SearchScreen()),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        prefixIcon: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w),
-                          child: Icon(
-                            Icons.search,
-                            color: Colors.grey.shade500,
-                            size: 18.sp,
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.grey.shade800,
+                              size: 18.sp,
+                            ),
                           ),
-                        ),
-                        prefixIconConstraints: BoxConstraints(
-                          minWidth: 36.w,
-                          minHeight: 20.h,
-                        ),
-                        hintText: "Search Karachi's best food directory...",
-                        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey.shade400,
-                          // fontSize: 13.sp,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(
-                          bottom: 5.h,
-                          top: 5.h,
-                        ), // centers text perfectly
+                          Text(
+                            "Search Karachi's best food directory...",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey.shade800,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -296,13 +152,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 12.h),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
-                height: 72,
+                height: 72.h,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50.withOpacity(0.65),
                   borderRadius: BorderRadius.circular(24),
