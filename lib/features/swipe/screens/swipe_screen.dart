@@ -31,6 +31,68 @@ class _SwipeScreenState extends State<SwipeScreen> {
   final List<SwipeItem> _swipeItems = [];
   final List<Map<String, dynamic>> _resData = [];
 
+  // 🔹 Helper to init swipe items once per data fetch
+  void _initSwipeItems(List<QueryDocumentSnapshot> docs) {
+    _swipeItems.clear();
+    _resData.clear();
+
+    final matchName = widget.matchName;
+    final isSearch = matchName.isNotEmpty;
+    final isFilterActive =
+        widget.priceTags.isNotEmpty || widget.selectedFilters.isNotEmpty;
+
+    List<QueryDocumentSnapshot> workingDocs = docs;
+
+    if (isFilterActive) {
+      workingDocs = workingDocs.where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final price = data['priceRange'] ?? '\$';
+        if (widget.priceTags.isNotEmpty && !widget.priceTags.contains(price))
+          return false;
+
+        for (var entry in widget.selectedFilters.entries) {
+          final field = entry.key;
+          final requiredValues = entry.value;
+          final docValues = data[field];
+
+          if (docValues is List) {
+            if (!requiredValues.any((val) => docValues.contains(val))) {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        }
+
+        return true;
+      }).toList();
+    }
+
+    if (isSearch) {
+      workingDocs.sort((a, b) {
+        final aMatch = (a.data() as Map)['name'] == matchName;
+        final bMatch = (b.data() as Map)['name'] == matchName;
+        return bMatch ? 1 : (aMatch ? -1 : 0);
+      });
+    }
+
+    for (var doc in workingDocs) {
+      final data = doc.data() as Map<String, dynamic>;
+      _resData.add(data);
+
+      _swipeItems.add(
+        SwipeItem(
+          content: AutoSizeText(data['name'] ?? "Restaurant"),
+          likeAction: () => MyMethods().rightSwipe(data['name'] as String),
+          nopeAction: () => MyMethods().leftSwipe(data['name'] as String),
+          superlikeAction: () => MyMethods().favourites(data['name'] as String),
+        ),
+      );
+    }
+
+    _matchEngine = MatchEngine(swipeItems: _swipeItems);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -101,71 +163,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 );
               }
 
-              _swipeItems.clear();
-              _resData.clear();
-
-              final matchName = widget.matchName;
-              final isSearch = matchName.isNotEmpty;
-              final isFilterActive =
-                  widget.priceTags.isNotEmpty ||
-                  widget.selectedFilters.isNotEmpty;
-
-              List<QueryDocumentSnapshot> workingDocs = docs;
-
-              if (isFilterActive) {
-                workingDocs = workingDocs.where((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final price = data['priceRange'] ?? '\$';
-                  if (widget.priceTags.isNotEmpty &&
-                      !widget.priceTags.contains(price))
-                    return false;
-
-                  for (var entry in widget.selectedFilters.entries) {
-                    final field = entry.key;
-                    final requiredValues = entry.value;
-                    final docValues = data[field];
-
-                    if (docValues is List) {
-                      if (!requiredValues.any(
-                        (val) => docValues.contains(val),
-                      )) {
-                        return false;
-                      }
-                    } else {
-                      return false;
-                    }
-                  }
-
-                  return true;
-                }).toList();
+              // 🔹 Only init swipe items once per snapshot update
+              if (_swipeItems.isEmpty) {
+                _initSwipeItems(docs);
               }
-
-              if (isSearch) {
-                workingDocs.sort((a, b) {
-                  final aMatch = (a.data() as Map)['name'] == matchName;
-                  final bMatch = (b.data() as Map)['name'] == matchName;
-                  return bMatch ? 1 : (aMatch ? -1 : 0);
-                });
-              }
-
-              for (var doc in workingDocs) {
-                final data = doc.data() as Map<String, dynamic>;
-                _resData.add(data);
-
-                _swipeItems.add(
-                  SwipeItem(
-                    content: AutoSizeText(data['name'] ?? "Restaurant"),
-                    likeAction: () =>
-                        MyMethods().rightSwipe(data['name'] as String),
-                    nopeAction: () =>
-                        MyMethods().leftSwipe(data['name'] as String),
-                    superlikeAction: () =>
-                        MyMethods().favourites(data['name'] as String),
-                  ),
-                );
-              }
-
-              _matchEngine = MatchEngine(swipeItems: _swipeItems);
 
               return Expanded(
                 child: Padding(
