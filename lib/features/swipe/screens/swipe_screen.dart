@@ -31,92 +31,67 @@ class _SwipeScreenState extends State<SwipeScreen> {
   final List<SwipeItem> _swipeItems = [];
   final List<Map<String, dynamic>> _resData = [];
 
-  // @override
-  // void initState() {
-  //   super.initState();
+  // 🔹 Helper to init swipe items once per data fetch
+  void _initSwipeItems(List<QueryDocumentSnapshot> docs) {
+    _swipeItems.clear();
+    _resData.clear();
 
-  //   // 🔹 Offline fallback mock data
-  //   final mockRestaurants = [
-  //     {
-  //       'name': 'Mojo Brew',
-  //       'imageUrl':
-  //           'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800',
-  //       'rating': 4.5,
-  //       'priceRange': '\$\$',
-  //       'tags': ['Coffee', 'Vegan', 'Brunch'],
-  //       'desc':
-  //           'A cozy cafe serving specialty coffee and all-day brunch in Karachi.',
-  //       // added mock fields ↓↓↓
-  //       'hasFoodpanda': true,
-  //       'hasReservations': true,
-  //       'instagram': 'https://www.instagram.com/mojobrew',
-  //       'foodpandaUrl': 'https://www.foodpanda.pk/restaurant/mojobrew',
-  //     },
-  //     {
-  //       'name': 'The Social Hub',
-  //       'imageUrl':
-  //           'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
-  //       'rating': 4.2,
-  //       'priceRange': '\$\$',
-  //       'tags': ['Continental', 'Desserts', 'Cafe'],
-  //       'desc':
-  //           'Trendy cafe known for its desserts, pasta, and Instagrammable vibe.',
-  //       // added mock fields ↓↓↓
-  //       'hasFoodpanda': false,
-  //       'hasReservations': true,
-  //       'instagram': 'https://www.instagram.com/thesocialhubpk',
-  //       'foodpandaUrl': '',
-  //     },
-  //     {
-  //       'name': 'Biryani Wala',
-  //       'imageUrl':
-  //           'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
-  //       'rating': 4.8,
-  //       'priceRange': '\$',
-  //       'tags': ['Desi', 'Biryani', 'Spicy'],
-  //       'desc': 'Authentic Karachi-style biryani with raita and salad combo.',
-  //       // added mock fields ↓↓↓
-  //       'hasFoodpanda': true,
-  //       'hasReservations': false,
-  //       'instagram': '',
-  //       'foodpandaUrl': 'https://www.foodpanda.pk/restaurant/biryaniwala',
-  //     },
-  //     {
-  //       'name': 'Sushi & Co',
-  //       'imageUrl':
-  //           'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800',
+    final matchName = widget.matchName;
+    final isSearch = matchName.isNotEmpty;
+    final isFilterActive =
+        widget.priceTags.isNotEmpty || widget.selectedFilters.isNotEmpty;
 
-  //       'rating': 4.6,
-  //       'priceRange': '\$\$\$',
-  //       'tags': ['Japanese', 'Sushi', 'Seafood'],
-  //       'desc':
-  //           'Premium Japanese dining with sushi rolls and sashimi platters.',
-  //       // added mock fields ↓↓↓
-  //       'hasFoodpanda': false,
-  //       'hasReservations': true,
-  //       'instagram': 'https://www.instagram.com/sushiandco.pk',
-  //       'foodpandaUrl': '',
-  //     },
-  //   ];
+    List<QueryDocumentSnapshot> workingDocs = docs;
 
-  //   // 🔹 Use mock data for offline testing
-  //   for (var data in mockRestaurants) {
-  //     _resData.add(data);
-  //     _swipeItems.add(
-  //       SwipeItem(
-  //         content: AutoSizeText((data['name'] ?? 'Restaurant').toString()),
-  //         // likeAction: () => MyMethods().rightSwipe(data['name'] as String),
-  //         // nopeAction: () => MyMethods().leftSwipe(data['name'] as String),
-  //         // superlikeAction: () => MyMethods().favourites(data['name'] as String),
-  //         likeAction: () => debugPrint("Liked: ${data['name']}"),
-  //         nopeAction: () => debugPrint("Nope: ${data['name']}"),
-  //         superlikeAction: () => debugPrint("Superliked: ${data['name']}"),
-  //       ),
-  //     );
-  //   }
+    if (isFilterActive) {
+      workingDocs = workingDocs.where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final price = data['priceRange'] ?? '\$';
+        if (widget.priceTags.isNotEmpty && !widget.priceTags.contains(price))
+          return false;
 
-  //   _matchEngine = MatchEngine(swipeItems: _swipeItems);
-  // }
+        for (var entry in widget.selectedFilters.entries) {
+          final field = entry.key;
+          final requiredValues = entry.value;
+          final docValues = data[field];
+
+          if (docValues is List) {
+            if (!requiredValues.any((val) => docValues.contains(val))) {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        }
+
+        return true;
+      }).toList();
+    }
+
+    if (isSearch) {
+      workingDocs.sort((a, b) {
+        final aMatch = (a.data() as Map)['name'] == matchName;
+        final bMatch = (b.data() as Map)['name'] == matchName;
+        return bMatch ? 1 : (aMatch ? -1 : 0);
+      });
+    }
+
+    for (var doc in workingDocs) {
+      final data = doc.data() as Map<String, dynamic>;
+      _resData.add(data);
+
+      _swipeItems.add(
+        SwipeItem(
+          content: AutoSizeText(data['name'] ?? "Restaurant"),
+          likeAction: () => MyMethods().rightSwipe(data['name'] as String),
+          nopeAction: () => MyMethods().leftSwipe(data['name'] as String),
+          superlikeAction: () => MyMethods().favourites(data['name'] as String),
+        ),
+      );
+    }
+
+    _matchEngine = MatchEngine(swipeItems: _swipeItems);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,13 +114,24 @@ class _SwipeScreenState extends State<SwipeScreen> {
             ],
           ),
 
-          // 🔹 ORIGINAL FIREBASE SECTION (commented out for offline use)
-          // /*
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('restaurants')
                 .snapshots(),
             builder: (context, snapshot) {
+              // 🔹 Debug Firestore test
+              (() async {
+                print("Fetching cards...");
+                try {
+                  final query = await FirebaseFirestore.instance
+                      .collection('cards')
+                      .get();
+                  print("Cards fetched: ${query.docs.length}");
+                } catch (e) {
+                  print("Error fetching cards: $e");
+                }
+              })();
+
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Expanded(
                   child: Center(child: CircularProgressIndicator()),
@@ -164,6 +150,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
               }
 
               final docs = snapshot.data?.docs ?? [];
+              print("Query snapshot size: ${docs.length}");
+
               if (docs.isEmpty) {
                 return const Expanded(
                   child: Center(
@@ -175,80 +163,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 );
               }
 
-              // Populate swipe items from Firestore
-              _swipeItems.clear();
-              _resData.clear();
-
-              //
-
-              final matchName = widget.matchName;
-              final isSearch = matchName.isNotEmpty;
-              final isFilterActive =
-                  widget.priceTags.isNotEmpty ||
-                  widget.selectedFilters.isNotEmpty;
-
-              List<QueryDocumentSnapshot> workingDocs = docs;
-
-              // 1. Apply filtering if filters are active
-              if (isFilterActive) {
-                workingDocs = workingDocs.where((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-
-                  // Price filter
-                  final price = data['priceRange'] ?? '\$';
-                  if (widget.priceTags.isNotEmpty &&
-                      !widget.priceTags.contains(price))
-                    return false;
-
-                  // Other filters
-                  for (var entry in widget.selectedFilters.entries) {
-                    final field = entry.key;
-                    final requiredValues = entry.value;
-                    final docValues = data[field];
-
-                    if (docValues is List) {
-                      if (!requiredValues.any(
-                        (val) => docValues.contains(val),
-                      )) {
-                        return false;
-                      }
-                    } else {
-                      return false;
-                    }
-                  }
-
-                  return true;
-                }).toList();
+              // 🔹 Only init swipe items once per snapshot update
+              if (_swipeItems.isEmpty) {
+                _initSwipeItems(docs);
               }
-
-              // 2. Sort by search match if search is active
-              if (isSearch) {
-                workingDocs.sort((a, b) {
-                  final aMatch = (a.data() as Map)['name'] == matchName;
-                  final bMatch = (b.data() as Map)['name'] == matchName;
-                  return bMatch ? 1 : (aMatch ? -1 : 0);
-                });
-              }
-
-              // 3. Build swipe items from final workingDocs
-              for (var doc in workingDocs) {
-                final data = doc.data() as Map<String, dynamic>;
-                _resData.add(data);
-
-                _swipeItems.add(
-                  SwipeItem(
-                    content: AutoSizeText(data['name'] ?? "Restaurant"),
-                    likeAction: () =>
-                        MyMethods().rightSwipe(data['name'] as String),
-                    nopeAction: () =>
-                        MyMethods().leftSwipe(data['name'] as String),
-                    superlikeAction: () =>
-                        MyMethods().favourites(data['name'] as String),
-                  ),
-                );
-              }
-
-              _matchEngine = MatchEngine(swipeItems: _swipeItems);
 
               return Expanded(
                 child: Padding(
@@ -275,37 +193,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
               );
             },
           ),
-
-          // */
-
-          // 🔹 OFFLINE MODE (using mock data)
-          // Expanded(
-          //   child: Center(
-          //     child: SwipeCards(
-          //       matchEngine: _matchEngine,
-          //       onStackFinished: () {
-          //         ScaffoldMessenger.of(context).showSnackBar(
-          //           const SnackBar(content: Text("No more restaurants!")),
-          //         );
-          //       },
-          //       itemBuilder: (context, index) {
-          //         final data = _resData[index];
-          //         return _buildSwipeCard(context, colorScheme, data);
-          //       },
-          //       itemChanged: (item, index) =>
-          //           debugPrint("Card changed: $index"),
-          //       upSwipeAllowed: true,
-          //       fillSpace: false,
-          //     ),
-          //   ),
-          // ),
           SizedBox(height: 100.h),
         ],
       ),
     );
   }
 
-  // 🔹 Reusable card builder
   Widget _buildSwipeCard(
     BuildContext context,
     ColorScheme colorScheme,
@@ -359,7 +252,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🔹 Image
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16.w),
                       child: data['imageUrl'] != null
@@ -382,10 +274,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                             ),
                     ),
                     SizedBox(height: 16.h),
-
-                    //Title and price range
                     Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         AutoSizeText(
                           data['name'] ?? "Unknown",
@@ -397,7 +286,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         ),
                       ],
                     ),
-
                     Row(
                       children: [
                         RatingBarIndicator(
@@ -412,7 +300,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           itemSize: 24.w,
                         ),
                         SizedBox(width: 4.w),
-
                         AutoSizeText(
                           "(${data['rating'] ?? "—"})",
                           style: TextStyle(
@@ -423,7 +310,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                             fontSize: 10.sp,
                           ),
                         ),
-
                         SizedBox(width: 4.w),
                         AutoSizeText(
                           "${data['priceRange'] ?? "—"}",
@@ -435,10 +321,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 8.h),
-
-                    // 🔹 Tags
                     if (data['food'] != null)
                       Wrap(
                         spacing: 8,
@@ -455,7 +338,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 ),
                                 side: BorderSide.none,
                                 visualDensity: VisualDensity.compact,
-
                                 backgroundColor: colorScheme.primary
                                     .withOpacity(0.25),
                               ),
@@ -463,8 +345,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                             .toList(),
                       ),
                     SizedBox(height: 8.h),
-
-                    // 🔹 Description
                     AutoSizeText(
                       data['desc'] ?? "No description.",
                       maxLines: 3,
@@ -474,14 +354,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         fontSize: 12.sp,
                       ),
                     ),
-
-                    // SizedBox(height: 20.h),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 15.h),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          // 🍴 Foodpanda button — only if restaurant hasFoodpanda == true
                           if (data['hasFoodpanda'] == true)
                             IconButton(
                               icon: SizedBox(
@@ -489,7 +366,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 child: Image.asset("assets/foodpanda.png"),
                               ),
                               onPressed: () async {
-                                // open the restaurant's Foodpanda link
                                 final url = data['foodpandaUrl'] ?? '';
                                 if (url.isNotEmpty) {
                                   debugPrint("Opening Foodpanda: $url");
@@ -497,10 +373,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 }
                               },
                             ),
-
                           SizedBox(width: 5.w),
-
-                          // 📸 Instagram button — always visible if instagram exists
                           if (data['instagram'] != null &&
                               data['instagram'].toString().isNotEmpty)
                             IconButton(
@@ -512,12 +385,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 }
                               },
                               icon: FaIcon(FontAwesomeIcons.instagram),
-                              // label: "Instagram",
                               color: Colors.pink,
                             ),
-
                           SizedBox(width: 5.w),
-                          // 📅 Reservation button — only if restaurant takes reservations
                           if (data['hasReservations'] == true)
                             IconButton(
                               icon: Icon(Icons.calendar_today),
@@ -525,14 +395,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 debugPrint(
                                   "Reservation tapped for ${data['name']}",
                                 );
-                                // implement reservation action or popup
                               },
                             ),
                         ],
                       ),
                     ),
-
-                    // SizedBox(width: 20.w),
                   ],
                 ),
               ),

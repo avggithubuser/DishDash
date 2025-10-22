@@ -6,7 +6,12 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:7.4.2")
         classpath("com.google.gms:google-services:4.4.0")
+<<<<<<< HEAD
     } 
+=======
+        classpath("com.android.tools.build:gradle:7.4.2")
+    }
+>>>>>>> b408db208a8972aadaf4350d9cf796eae7effa25
 }
 
 allprojects {
