@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dish_dash/features/auth/methods/auth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,7 +48,7 @@ class DishDashApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
               themeMode: mode,
-              home: HomeScreen(),
+              home: AuthPage(),
             );
           },
         );

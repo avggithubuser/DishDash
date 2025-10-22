@@ -42,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDKg2Jb_LBD2pKYfaVbih_T_hqkNeuFUSQ',
-    appId: '1:42191251749:web:4e9ed8b4a3db8bd97a92cc',
+    appId: '1:42191251749:web:17938505d1361cf47a92cc',
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     authDomain: 'dishdash-84c1b.firebaseapp.com',
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBSwXE8KCw3c-hb4B9ILe6sLSvZih0Jp4g',
-    appId: '1:42191251749:android:abdd1afa6a47e0117a92cc',
+    appId: '1:42191251749:android:952169c3da85eda77a92cc',
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
-    androidClientId: '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com',
+    androidClientId: '42191251749-0l8i9vbumaqe7v1820j2brudqiq301j2.apps.googleusercontent.com',
     iosClientId: '42191251749-evat4o82p5vptjqglpqm6p5o0aftro6r.apps.googleusercontent.com',
     iosBundleId: 'com.eat.dishDash',
   );
@@ -74,17 +74,18 @@ class DefaultFirebaseOptions {
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
-    androidClientId: '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com',
+    androidClientId: '42191251749-0l8i9vbumaqe7v1820j2brudqiq301j2.apps.googleusercontent.com',
     iosClientId: '42191251749-6nt6mgr111e1ajb070cspksra3jv40h8.apps.googleusercontent.com',
     iosBundleId: 'com.example.dishDash',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDKg2Jb_LBD2pKYfaVbih_T_hqkNeuFUSQ',
-    appId: '1:42191251749:web:075fa2caa05459a67a92cc',
+    appId: '1:42191251749:web:0910539290145cb17a92cc',
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     authDomain: 'dishdash-84c1b.firebaseapp.com',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
   );
+
 }

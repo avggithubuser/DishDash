@@ -7,20 +7,56 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:42191251749:android:952169c3da85eda77a92cc",
+        "android_client_info": {
+          "package_name": "com.eat.dish_dash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "42191251749-2l91fg9uta9admcnuq62le12pkb2mo6u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eat.dish_dash",
+            "certificate_hash": "c3c9ef48f9e8cbd802a501db4f4a28a858d6709f"
+          }
+        },
+        {
+          "client_id": "42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSwXE8KCw3c-hb4B9ILe6sLSvZih0Jp4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "42191251749-107640rcurjvm5o2st6pj68plfaanr1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.eat.dishdash"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:42191251749:android:abdd1afa6a47e0117a92cc",
         "android_client_info": {
           "package_name": "com.example.dish_dash"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.dish_dash",
-            "certificate_hash": "80a90ce2bf4e9ccd09f49b4f4e0bbfc2cf89b70c"
-          }
-        },
         {
           "client_id": "42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com",
           "client_type": 3
