@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:42191251749:android:7a391280a4c4923a7a92cc",
+        "mobilesdk_app_id": "1:42191251749:android:dc45ef22b4fe7af27a92cc",
         "android_client_info": {
           "package_name": "com.eat.dishdash"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "42191251749-c7n3q0q5t5rlva5rn2n2vnk8j95v336c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eat.dishdash",
+            "certificate_hash": "80a90ce2bf4e9ccd09f49b4f4e0bbfc2cf89b70c"
+          }
+        },
         {
           "client_id": "42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com",
           "client_type": 3

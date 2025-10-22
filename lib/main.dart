@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dish_dash/features/auth/methods/auth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +25,7 @@ Future<void> main() async {
 
     await GoogleSignIn.instance.initialize(
       clientId: Platform.isAndroid
-          ? '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com'
+          ? '42191251749-c7n3q0q5t5rlva5rn2n2vnk8j95v336c.apps.googleusercontent.com'
           : '42191251749-107640rcurjvm5o2st6pj68plfaanr1h.apps.googleusercontent.com',
       serverClientId:
           '42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com',
@@ -54,7 +55,7 @@ class DishDashApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
               themeMode: mode,
-              home: HomeScreen(),
+              home: AuthPage(),
             );
           },
         );
