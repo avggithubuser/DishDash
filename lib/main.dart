@@ -11,23 +11,30 @@ import 'package:dish_dash/features/home/screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await GoogleSignIn.instance.initialize(
+      clientId: Platform.isAndroid
+          ? '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com'
+          : '42191251749-107640rcurjvm5o2st6pj68plfaanr1h.apps.googleusercontent.com',
+      serverClientId:
+          '42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com',
+    );
 
-  await GoogleSignIn.instance.initialize(
-    clientId: Platform.isAndroid
-        ? '42191251749-50pms8tqght3rlpr7p9hrjgh9con26bs.apps.googleusercontent.com'
-        : '42191251749-107640rcurjvm5o2st6pj68plfaanr1h.apps.googleusercontent.com',
-    serverClientId:
-        '42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com',
-  );
-
-  runApp(const ProviderScope(child: DishDashApp()));
+    runApp(const ProviderScope(child: DishDashApp()));
+  } catch (e, stack) {
+    print('Error during app initialization: $e');
+    print(stack);
+  }
 }
 
 class DishDashApp extends StatelessWidget {
