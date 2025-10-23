@@ -3,9 +3,6 @@ import 'package:dish_dash/features/auth/methods/auth_methods.dart';
 import 'package:dish_dash/features/auth/screens/email_screen_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:dish_dash/core/services/theme_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

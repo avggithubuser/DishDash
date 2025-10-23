@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
@@ -28,22 +29,20 @@ class MyTextField extends StatelessWidget {
       style: TextStyle(color: Theme.of(context).textTheme.headlineSmall!.color),
       decoration: InputDecoration(
         labelText: labelText,
-        border: UnderlineInputBorder(),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade700),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
-        focusedBorder: UnderlineInputBorder(
+        focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
         labelStyle: GoogleFonts.inter(
           fontWeight: FontWeight.bold,
-          fontSize: MediaQuery.of(context).size.height * 0.025,
+          fontSize: 18.sp,
           color: Theme.of(context).colorScheme.primary,
         ),
         counterText: '',
         filled: filled,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(color: Colors.grey[600]),
       ),
     );
   }
