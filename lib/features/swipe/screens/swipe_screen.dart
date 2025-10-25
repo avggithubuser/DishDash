@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-// 🔸 Commented out Firebase imports so it compiles offline
-import 'package:cloud_firestore/cloud_firestore.dart';
+// 🔸 COMMENTED OUT FOR OFFLINE MODE
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish_dash/methods/firebase_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,14 +12,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SwipeScreen extends StatefulWidget {
-  final String matchName;
-  final Map<String, Set<String>> selectedFilters;
-  final List<String> priceTags;
-  SwipeScreen({
+  final String? matchName;
+  final Map<String, Set<String>>? selectedFilters;
+  final List<String>? priceTags;
+
+  const SwipeScreen({
     super.key,
-    required this.matchName,
-    required this.priceTags,
-    required this.selectedFilters,
+    this.matchName,
+    this.priceTags,
+    this.selectedFilters,
   });
 
   @override
@@ -31,66 +32,77 @@ class _SwipeScreenState extends State<SwipeScreen> {
   final List<SwipeItem> _swipeItems = [];
   final List<Map<String, dynamic>> _resData = [];
 
-  // 🔹 Helper to init swipe items once per data fetch
-  void _initSwipeItems(List<QueryDocumentSnapshot> docs) {
+  // 🔹 Mock offline restaurant data
+  final List<Map<String, dynamic>> _mockRestaurants = [
+    {
+      "name": "Mock Bistro",
+      "rating": 4.6,
+      "priceRange": "\$\$",
+      "food": ["Italian", "Pasta"],
+      "desc": "A cozy Italian bistro offering handmade pasta and wine.",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Zm9vZHxlbnwwfHwwfHx8Mg%3D%3D&auto=format&fit=crop&q=60&w=600",
+      "instagram": "https://instagram.com/mockbistro",
+      "hasFoodpanda": true,
+      "foodpandaUrl": "https://www.foodpanda.com/",
+      "hasReservations": true,
+    },
+    {
+      "name": "The Burger Hub",
+      "rating": 4.2,
+      "priceRange": "\$",
+      "food": ["Burgers", "Fast Food"],
+      "desc": "Juicy handcrafted burgers with fresh ingredients.",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1550547660-d9450f859349?w=800",
+      "instagram": "",
+      "hasFoodpanda": false,
+      "hasReservations": false,
+    },
+    {
+      "name": "Sushi Zen",
+      "rating": 4.9,
+      "priceRange": "\$\$\$",
+      "food": ["Japanese", "Sushi"],
+      "desc": "Elegant sushi experience with premium ingredients.",
+      "imageUrl":
+          "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=627",
+      "instagram": "https://instagram.com/sushizen",
+      "hasFoodpanda": true,
+      "foodpandaUrl": "https://www.foodpanda.com/",
+      "hasReservations": true,
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // 🔸 COMMENTED OUT FOR OFFLINE MODE
+    // _testFirestoreConnection();
+
+    _initSwipeItemsOffline();
+  }
+
+  // 🔹 Offline initialization using mock data
+  void _initSwipeItemsOffline() {
     _swipeItems.clear();
     _resData.clear();
 
-    final matchName = widget.matchName;
-    final isSearch = matchName.isNotEmpty;
-    final isFilterActive =
-        widget.priceTags.isNotEmpty || widget.selectedFilters.isNotEmpty;
-
-    List<QueryDocumentSnapshot> workingDocs = docs;
-
-    if (isFilterActive) {
-      workingDocs = workingDocs.where((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        final price = data['priceRange'] ?? '\$';
-        if (widget.priceTags.isNotEmpty && !widget.priceTags.contains(price))
-          return false;
-
-        for (var entry in widget.selectedFilters.entries) {
-          final field = entry.key;
-          final requiredValues = entry.value;
-          final docValues = data[field];
-
-          if (docValues is List) {
-            if (!requiredValues.any((val) => docValues.contains(val))) {
-              return false;
-            }
-          } else {
-            return false;
-          }
-        }
-
-        return true;
-      }).toList();
-    }
-
-    if (isSearch) {
-      workingDocs.sort((a, b) {
-        final aMatch = (a.data() as Map)['name'] == matchName;
-        final bMatch = (b.data() as Map)['name'] == matchName;
-        return bMatch ? 1 : (aMatch ? -1 : 0);
-      });
-    }
-
-    for (var doc in workingDocs) {
-      final data = doc.data() as Map<String, dynamic>;
+    for (var data in _mockRestaurants) {
       _resData.add(data);
-
       _swipeItems.add(
         SwipeItem(
-          content: AutoSizeText(data['name'] ?? "Restaurant"),
-          likeAction: () => MyMethods().rightSwipe(data['name'] as String),
-          nopeAction: () => MyMethods().leftSwipe(data['name'] as String),
-          superlikeAction: () => MyMethods().favourites(data['name'] as String),
+          content: AutoSizeText(data['name']),
+          likeAction: () => print("Right swipe (offline): ${data['name']}"),
+          nopeAction: () => print("Left swipe (offline): ${data['name']}"),
+          superlikeAction: () => print("Favourite (offline): ${data['name']}"),
         ),
       );
     }
 
-    _matchEngine = MatchEngine(swipeItems: _swipeItems);
+    setState(() {
+      _matchEngine = MatchEngine(swipeItems: _swipeItems);
+    });
   }
 
   @override
@@ -101,8 +113,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
       body: Column(
         children: [
           SizedBox(height: 16.h),
-
-          // Top swipe icons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -113,85 +123,29 @@ class _SwipeScreenState extends State<SwipeScreen> {
               Icon(Icons.favorite, color: Colors.redAccent, size: 30.sp),
             ],
           ),
-
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('restaurants')
-                .snapshots(),
-            builder: (context, snapshot) {
-              // 🔹 Debug Firestore test
-              (() async {
-                print("Fetching cards...");
-                try {
-                  final query = await FirebaseFirestore.instance
-                      .collection('cards')
-                      .get();
-                  print("Cards fetched: ${query.docs.length}");
-                } catch (e) {
-                  print("Error fetching cards: $e");
-                }
-              })();
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Expanded(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              if (snapshot.hasError) {
-                return Expanded(
-                  child: Center(
-                    child: AutoSizeText(
-                      'Error: ${snapshot.error}',
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  ),
-                );
-              }
-
-              final docs = snapshot.data?.docs ?? [];
-              print("Query snapshot size: ${docs.length}");
-
-              if (docs.isEmpty) {
-                return const Expanded(
-                  child: Center(
-                    child: AutoSizeText(
-                      "No restaurants available.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                );
-              }
-
-              // 🔹 Only init swipe items once per snapshot update
-              if (_swipeItems.isEmpty) {
-                _initSwipeItems(docs);
-              }
-
-              return Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                  child: Center(
-                    child: SwipeCards(
-                      matchEngine: _matchEngine,
-                      onStackFinished: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("No more restaurants!")),
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        final data = _resData[index];
-                        return _buildSwipeCard(context, colorScheme, data);
-                      },
-                      itemChanged: (item, index) =>
-                          debugPrint("Card changed: $index"),
-                      upSwipeAllowed: true,
-                      fillSpace: false,
-                    ),
-                  ),
+          // 🔹 Offline SwipeCards
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.h),
+              child: Center(
+                child: SwipeCards(
+                  matchEngine: _matchEngine,
+                  onStackFinished: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("No more restaurants!")),
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    final data = _resData[index];
+                    return _buildSwipeCard(context, colorScheme, data);
+                  },
+                  itemChanged: (item, index) =>
+                      debugPrint("Card changed: $index"),
+                  upSwipeAllowed: true,
+                  fillSpace: false,
                 ),
-              );
-            },
+              ),
+            ),
           ),
           SizedBox(height: 100.h),
         ],
@@ -314,7 +268,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         AutoSizeText(
                           "${data['priceRange'] ?? "—"}",
                           style: TextStyle(
-                            color: Colors.amber,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 14.sp,
                           ),
@@ -322,27 +276,52 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       ],
                     ),
                     SizedBox(height: 8.h),
+                    // 🔹 Food tags with different colors
                     if (data['food'] != null)
                       Wrap(
                         spacing: 8,
-                        children: (data['food'] as List)
-                            .map(
-                              (tag) => Chip(
-                                labelPadding: EdgeInsets.symmetric(
-                                  horizontal: 2.w,
-                                  vertical: 0.h,
-                                ),
-                                label: Text(
-                                  tag.toString(),
-                                  style: GoogleFonts.fraunces(fontSize: 10.sp),
-                                ),
-                                side: BorderSide.none,
-                                visualDensity: VisualDensity.compact,
-                                backgroundColor: colorScheme.primary
-                                    .withOpacity(0.25),
+                        children: (data['food'] as List).asMap().entries.map((
+                          entry,
+                        ) {
+                          final index = entry.key;
+                          final tag = entry.value;
+
+                          // Neon + neutral palette
+                          final chipColors = [
+                            Colors.pinkAccent,
+                            Colors.cyanAccent,
+                            Colors.limeAccent,
+                            Colors.deepPurpleAccent,
+                            Colors.orangeAccent,
+                            Colors.tealAccent,
+                            Colors.amberAccent,
+                            Colors.grey.shade400,
+                            Colors.brown.shade300,
+                          ];
+
+                          final color = chipColors[index % chipColors.length];
+
+                          return Chip(
+                            labelPadding: EdgeInsets.symmetric(
+                              horizontal: 0.w,
+                              vertical: 0.h,
+                            ),
+                            label: Text(
+                              tag.toString(),
+                              style: GoogleFonts.montserrat(
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
-                            )
-                            .toList(),
+                            ),
+                            side: BorderSide(
+                              color: color.withOpacity(0.4),
+                              width: 1.2.w,
+                            ),
+                            visualDensity: VisualDensity.compact,
+                            backgroundColor: color.withOpacity(0.2),
+                          );
+                        }).toList(),
                       ),
                     SizedBox(height: 8.h),
                     AutoSizeText(
@@ -352,6 +331,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Padding(

@@ -26,11 +26,11 @@ class ThemeService {
   // LIGHT
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color.fromARGB(255, 218, 204, 204),
-    cardColor: const Color.fromRGBO(200, 100, 100, 1),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 255, 252, 237),
+    cardColor: const Color.fromRGBO(182, 119, 29, 1),
     colorScheme: const ColorScheme.light(
-      primary: Color.fromRGBO(200, 100, 100, 1),
-      secondary: Color(0xFFE57373),
+      primary: Color.fromRGBO(182, 119, 29, 1),
+      secondary: Color.fromRGBO(182, 119, 29, 1),
     ),
     textTheme: TextTheme(
       titleLarge: GoogleFonts.fraunces(

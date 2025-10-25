@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:dish_dash/features/auth/methods/auth_page.dart';
+import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
+import 'package:dish_dash/features/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +26,8 @@ Future<void> main() async {
     );
 
     await FirebaseAppCheck.instance.activate(
-      providerAndroid: AndroidPlayIntegrityProvider(),
+      // providerAndroid: AndroidPlayIntegrityProvider(),
+      androidProvider: AndroidProvider.debug,
     );
 
     await GoogleSignIn.instance.initialize(
@@ -59,7 +62,7 @@ class DishDashApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
               themeMode: mode,
-              home: AuthPage(),
+              home: HomeScreen(),
             );
           },
         );
