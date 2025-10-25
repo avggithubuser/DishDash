@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "42191251749-3te76l9f88v7h33in7qh15htqipdj7ip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eat.dishdash",
+            "certificate_hash": "c3c9ef48f9e8cbd802a501db4f4a28a858d6709f"
+          }
+        },
+        {
           "client_id": "42191251749-c7n3q0q5t5rlva5rn2n2vnk8j95v336c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

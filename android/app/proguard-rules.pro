@@ -26,10 +26,14 @@
 # Keep your app classes
 -keep class com.eat.dishdash.** { *; }
 
-# (Optional) Play Core Splitcompat and Splitinstall
--dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication
--dontwarn com.google.android.play.core.splitinstall.**
--keep class com.google.android.play.core.splitinstall.** { *; }
--keep interface com.google.android.play.core.splitinstall.** { *; }
--keep class com.google.android.play.core.splitcompat.** { *; }
+# Play Core (app update, asset packs, split install)
+-dontwarn com.google.android.play.core.**
+-keep class com.google.android.play.core.** { *; }
+-keep interface com.google.android.play.core.** { *; }
+-keep class com.google.android.play.core.common.** { *; }
+-keep class com.google.android.play.core.listener.** { *; }
 -keep class com.google.android.play.core.tasks.** { *; }
+-keep class com.google.android.play.core.appupdate.** { *; }
+-keep class com.google.android.play.core.assetpacks.** { *; }
+-keep class com.google.android.play.core.install.** { *; }
+

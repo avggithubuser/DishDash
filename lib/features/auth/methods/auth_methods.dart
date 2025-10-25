@@ -202,6 +202,9 @@ class Authentication {
 
         if (user == null) {
           Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: AutoSizeText("Google sign-in cancelled.")),
+          );
         } else {
           final authClient = user.authorizationClient;
           final GoogleSignInClientAuthorization? authorization =
@@ -267,6 +270,9 @@ class Authentication {
     } catch (e) {
       Navigator.of(context).pop();
       print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: AutoSizeText("Google sign-in failed: $e")),
+      );
       showDialog(
         context: context,
         builder: (context) => AlertDialog(content: Text(e.toString())),
