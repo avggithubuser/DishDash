@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// 🔸 Commented out Firebase import for offline mode
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish_dash/features/home/screens/home_screen.dart';
 import 'package:dish_dash/features/home/widgets/filters.dart';
 import 'package:dish_dash/features/home/widgets/price_tags.dart';
@@ -18,22 +19,31 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  List<String> restaurants = [];
+  List<String> restaurants = [
+    // 🔸 Temporary offline mock data (you can remove when Firebase is back)
+    "Kababjees",
+    "Okra",
+    "Xander’s",
+    "Côte Rôtie",
+    "Ginsoy",
+  ];
+
   List<String> matchingSearches = [];
   String searchedRestaurant = '';
   bool showSearchSuggestions = false;
 
+  // 🔸 Commented out Firestore fetching for offline mode
+  /*
   getRestaurantNames() async {
     restaurants.clear();
-    QuerySnapshot<Map<String, dynamic>> allRestaurants = await FirebaseFirestore
-        .instance
-        .collection('restaurants')
-        .get();
+    QuerySnapshot<Map<String, dynamic>> allRestaurants =
+        await FirebaseFirestore.instance.collection('restaurants').get();
     allRestaurants.docs.forEach((doc) {
       Map<String, dynamic> docData = doc.data();
       restaurants.add(docData['name']);
     });
   }
+  */
 
   List<String> searchData(String value) {
     String searchVal = value.toString().toLowerCase().replaceAll(
@@ -42,21 +52,14 @@ class _SearchScreenState extends State<SearchScreen> {
     );
     List<String> matchingNames = [];
     try {
-      matchingNames = restaurants
-          .where((restaurant) {
-            String tempName = restaurant
-                .toString()
-                .toLowerCase()
-                .replaceAll(
-                  RegExp(r'[^a-zA-Z0-9]'),
-                  '',
-                ) //remove spaces etc and make lower case
-                ;
-            String tempSearch = searchVal;
-
-            return tempName.contains(tempSearch);
-          }) //check the searching value in list ykwim (restaurants ke naam)
-          .toList();
+      matchingNames = restaurants.where((restaurant) {
+        String tempName = restaurant.toString().toLowerCase().replaceAll(
+          RegExp(r'[^a-zA-Z0-9]'),
+          '',
+        );
+        String tempSearch = searchVal;
+        return tempName.contains(tempSearch);
+      }).toList();
     } catch (e) {
       print(e.toString());
     }
@@ -85,7 +88,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    getRestaurantNames(); // get restaurants names and save locally
+    // 🔸 Commented out Firebase fetching
+    // getRestaurantNames();
   }
 
   @override
@@ -113,7 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     controller: _searchController,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: Colors.black87,
-                      fontSize: 13.sp, // slightly smaller to balance with icon
+                      fontSize: 13.sp,
                     ),
                     decoration: InputDecoration(
                       isDense: true,
@@ -132,7 +136,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       hintText: "Search Karachi's best food directory...",
                       hintStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.grey.shade800,
-                        // fontSize: 13.sp,
                       ),
                       border: InputBorder.none,
                     ),
@@ -148,7 +151,6 @@ class _SearchScreenState extends State<SearchScreen> {
       body: ListView(
         children: [
           !showSearchSuggestions
-              // show filters if not typing
               ? SizedBox(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -188,49 +190,42 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
 
-                          // stream all tags from firebase
-                          // add limit?
+                          // 🔸 Commented out live Firebase Stream for offline use
+                          /*
                           StreamBuilder(
                             stream: FirebaseFirestore.instance
                                 .collection('restaurants')
                                 .snapshots(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                // get and set all lists from doc to local map
                                 snapshot.data!.docs.forEach((doc) {
                                   var data = doc.data();
-
                                   data.forEach((key, value) {
                                     if (value is List &&
                                         value.every((item) => item is String)) {
                                       allFilters.putIfAbsent(
-                                        key,
-                                        () => <String>{},
-                                      );
+                                          key, () => <String>{});
                                       allFilters[key]!.addAll(
-                                        value.cast<String>(),
-                                      );
+                                          value.cast<String>());
                                     }
                                   });
                                 });
-                                //
+
                                 return Column(
                                   children: allFilters.entries.map((entry) {
                                     final filterType = entry.key;
-                                    final tagsList = entry.value
-                                        .toList(); // Convert Set<String> to List<String>
-
+                                    final tagsList = entry.value.toList();
                                     return SizedBox(
                                       child: MyTags(
                                         tags: tagsList,
                                         filterType: filterType,
                                         onSelectionChanged:
                                             (Set<String> selectedTags) {
-                                              setState(() {
-                                                selectedFilters[filterType] =
-                                                    selectedTags;
-                                              });
-                                            },
+                                          setState(() {
+                                            selectedFilters[filterType] =
+                                                selectedTags;
+                                          });
+                                        },
                                       ),
                                     );
                                   }).toList(),
@@ -241,6 +236,19 @@ class _SearchScreenState extends State<SearchScreen> {
                                 );
                               }
                             },
+                          ),
+                          */
+
+                          // 🔹 Simple offline placeholder
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.h),
+                            child: AutoSizeText(
+                              "(Offline mode — filters disabled)",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey,
+                                fontSize: 14.sp,
+                              ),
+                            ),
                           ),
 
                           Padding(
@@ -257,7 +265,6 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ],
                       ),
-
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.w),
                         child: SizedBox(
@@ -296,9 +303,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ],
                   ),
                 )
-              :
-                // search suggestions
-                Column(
+              : Column(
                   children: [
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 2.w),
@@ -307,9 +312,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      constraints: BoxConstraints(
-                        maxHeight: 200.h,
-                      ), // Limit height
+                      constraints: BoxConstraints(maxHeight: 200.h),
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: matchingSearches.length,
