@@ -10,6 +10,8 @@ import 'package:swipe_cards/swipe_cards.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dish_dash/core/widgets/icon_button.dart';
+import 'package:dish_dash/core/widgets/text_button.dart';
 
 class SwipeScreen extends StatefulWidget {
   final String? matchName;
@@ -165,19 +167,20 @@ class _SwipeScreenState extends State<SwipeScreen> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: colorScheme.primary, width: 1.w),
             color: Colors.transparent,
             boxShadow: [
               BoxShadow(
-                color: colorScheme.secondary.withOpacity(0.8),
+                color: colorScheme.secondary.withOpacity(0.6),
                 blurRadius: 20,
                 spreadRadius: 3,
-                offset: const Offset(-6, 0),
+                offset: const Offset(-1, 0),
               ),
               BoxShadow(
-                color: colorScheme.primary.withOpacity(0.8),
+                color: colorScheme.primary.withOpacity(0.6),
                 blurRadius: 20,
                 spreadRadius: 3,
-                offset: const Offset(6, 0),
+                offset: const Offset(1, 0),
               ),
             ],
             gradient: LinearGradient(
@@ -212,7 +215,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           ? Image.network(
                               data['imageUrl'],
                               width: double.infinity,
-                              height: 200.h,
+                              height: 250.h,
                               fit: BoxFit.cover,
                             )
                           : Container(
@@ -239,6 +242,74 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          if (data['hasFoodpanda'] == true)
+                            IconNeonButton(
+                              bgcolor: Colors.white,
+                              icon: SizedBox(
+                                height: 20.h,
+                                child: Image.asset("assets/foodpanda.png"),
+                              ),
+                              onPressed: () async {
+                                final url = data['foodpandaUrl'] ?? '';
+                                if (url.isNotEmpty) {
+                                  debugPrint("Opening Foodpanda: $url");
+                                  await launchUrl(Uri.parse(url));
+                                }
+                              },
+                            ),
+                          SizedBox(width: 5.w),
+                          if (data['instagram'] != null &&
+                              data['instagram'].toString().isNotEmpty)
+                            IconNeonButton(
+                              bgcolor: Colors.white,
+                              // height: 28.h,
+                              onPressed: () async {
+                                final url = data['instagram'];
+                                if (url != null && url.toString().isNotEmpty) {
+                                  debugPrint("Opening Instagram: $url");
+                                  await launchUrl(Uri.parse(url));
+                                }
+                              },
+                              icon: FaIcon(
+                                FontAwesomeIcons.instagram,
+                                color: Colors.white,
+                              ),
+                              // color: Colors.pink,
+                            ),
+                          SizedBox(width: 5.w),
+                          if (data['hasReservations'] == true)
+                            IconNeonButton(
+                              bgcolor: Colors.white,
+                              // iconSize: 28.h,
+                              icon: Icon(
+                                Icons.calendar_month,
+                                color: Colors.white,
+                              ),
+                              // color: Colors.white,
+                              onPressed: () {
+                                debugPrint(
+                                  "Reservation tapped for ${data['name']}",
+                                );
+                              },
+                            ),
+                          SizedBox(width: 5.w),
+                          NeonButton(
+                            text: "menu",
+                            color: Colors.white,
+                            horizontalPadding: 12,
+                            verticalPadding: 8,
+                            onPressed: () {
+                              // handle menu tap
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                     Row(
                       children: [
@@ -332,52 +403,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 15.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          if (data['hasFoodpanda'] == true)
-                            IconButton(
-                              icon: SizedBox(
-                                height: 20.h,
-                                child: Image.asset("assets/foodpanda.png"),
-                              ),
-                              onPressed: () async {
-                                final url = data['foodpandaUrl'] ?? '';
-                                if (url.isNotEmpty) {
-                                  debugPrint("Opening Foodpanda: $url");
-                                  await launchUrl(Uri.parse(url));
-                                }
-                              },
-                            ),
-                          SizedBox(width: 5.w),
-                          if (data['instagram'] != null &&
-                              data['instagram'].toString().isNotEmpty)
-                            IconButton(
-                              onPressed: () async {
-                                final url = data['instagram'];
-                                if (url != null && url.toString().isNotEmpty) {
-                                  debugPrint("Opening Instagram: $url");
-                                  await launchUrl(Uri.parse(url));
-                                }
-                              },
-                              icon: FaIcon(FontAwesomeIcons.instagram),
-                              color: Colors.pink,
-                            ),
-                          SizedBox(width: 5.w),
-                          if (data['hasReservations'] == true)
-                            IconButton(
-                              icon: Icon(Icons.calendar_today),
-                              onPressed: () {
-                                debugPrint(
-                                  "Reservation tapped for ${data['name']}",
-                                );
-                              },
-                            ),
-                        ],
                       ),
                     ),
                   ],

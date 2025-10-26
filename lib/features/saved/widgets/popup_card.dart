@@ -5,6 +5,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dish_dash/core/widgets/text_button.dart';
+import 'package:dish_dash/core/widgets/icon_button.dart';
 
 Widget restaurantPopupCard(
   BuildContext context,
@@ -24,24 +26,10 @@ Widget restaurantPopupCard(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                colorScheme.secondary.withOpacity(0.4),
-                colorScheme.primary.withOpacity(0.4),
+                const Color.fromRGBO(230, 216, 195, 1),
+                const Color.fromRGBO(230, 216, 195, 1),
               ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: colorScheme.secondary.withOpacity(0.8),
-                blurRadius: 20,
-                spreadRadius: 3,
-                offset: const Offset(-6, 0),
-              ),
-              BoxShadow(
-                color: colorScheme.primary.withOpacity(0.8),
-                blurRadius: 20,
-                spreadRadius: 3,
-                offset: const Offset(6, 0),
-              ),
-            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -56,7 +44,7 @@ Widget restaurantPopupCard(
                     width: 1.2.w,
                   ),
                 ),
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(12.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -87,26 +75,21 @@ Widget restaurantPopupCard(
                       ),
                     ),
                     SizedBox(height: 8.h),
-                    RatingBarIndicator(
-                      rating: data['rating'] ?? 0.0,
-                      itemBuilder: (context, _) =>
-                          const Icon(Icons.star, color: Colors.amber),
-                      itemSize: 24.sp,
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      data['desc'] ?? "No description.",
-                      maxLines: 4,
-                      style: GoogleFonts.lora(
-                        fontSize: 12.sp,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
+                    // Menu button and icons in same row
                     Row(
                       children: [
+                        NeonButton(
+                          text: "menu",
+                          color: Colors.pink,
+                          horizontalPadding: 16,
+                          verticalPadding: 6,
+                          onPressed: () {
+                            // handle menu tap
+                          },
+                        ),
+                        SizedBox(width: 5.w),
                         if (data['hasFoodpanda'] == true)
-                          IconButton(
+                          IconNeonButton(
                             icon: SizedBox(
                               height: 20.h,
                               child: Image.asset("assets/foodpanda.png"),
@@ -118,11 +101,16 @@ Widget restaurantPopupCard(
                               }
                             },
                           ),
+                        SizedBox(width: 5.w),
                         if (data['instagram'] != null &&
                             data['instagram'].toString().isNotEmpty)
-                          IconButton(
-                            icon: FaIcon(FontAwesomeIcons.instagram),
-                            color: Colors.pink,
+                          IconNeonButton(
+                            icon: FaIcon(
+                              FontAwesomeIcons.instagram,
+                              color: Colors.white,
+                            ),
+                            bgcolor: Colors.pink,
+
                             onPressed: () async {
                               final url = data['instagram'];
                               if (url != null && url.isNotEmpty) {
@@ -130,9 +118,13 @@ Widget restaurantPopupCard(
                               }
                             },
                           ),
+                        SizedBox(width: 5.w),
                         if (data['hasReservations'] == true)
-                          IconButton(
-                            icon: Icon(Icons.calendar_today),
+                          IconNeonButton(
+                            icon: Icon(
+                              Icons.calendar_today,
+                              color: Colors.white,
+                            ),
                             onPressed: () {
                               debugPrint(
                                 "Reservation tapped for ${data['name']}",
@@ -140,6 +132,22 @@ Widget restaurantPopupCard(
                             },
                           ),
                       ],
+                    ),
+                    SizedBox(height: 8.h),
+                    RatingBarIndicator(
+                      rating: data['rating'] ?? 0.0,
+                      itemBuilder: (context, _) =>
+                          const Icon(Icons.star, color: Colors.amber),
+                      itemSize: 24.sp,
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      data['desc'] ?? "No description.",
+                      maxLines: 4,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 12.sp,
+                        color: colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),

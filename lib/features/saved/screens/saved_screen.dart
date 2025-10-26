@@ -25,7 +25,8 @@ class _SavedScreenState extends State<SavedScreen> {
       'name': 'Café Noir',
       'rating': 4.6,
       'location': 'Downtown',
-      'image': 'https://picsum.photos/200/300',
+      'image':
+          'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zm9vZHxlbnwwfHwwfHx8Mg%3D%3D&auto=format&fit=crop&q=60&w=600',
       'hasFoodpanda': true,
       'foodpandaUrl': 'https://www.foodpanda.com',
       'instagram': 'https://www.instagram.com/cafenoir',
@@ -35,7 +36,8 @@ class _SavedScreenState extends State<SavedScreen> {
       'name': 'Sushi Zen',
       'rating': 4.8,
       'location': 'Uptown',
-      'image': 'https://picsum.photos/201/300',
+      'image':
+          'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Zm9vZHxlbnwwfHwwfHx8Mg%3D%3D&auto=format&fit=crop&q=60&w=600',
     },
   ];
 
