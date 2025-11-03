@@ -20,7 +20,6 @@ class ProfileScreen extends StatelessWidget {
         builder: (context, future) {
           if (future.hasData) {
             Map<String, dynamic>? userData = future.data?.data();
-
             if (userData!.isNotEmpty) {
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),

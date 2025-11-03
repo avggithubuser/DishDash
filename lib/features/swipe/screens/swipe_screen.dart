@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dish_dash/features/reservations/screens/reservations_screen.dart';
 // 🔸 COMMENTED OUT FOR OFFLINE MODE
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish_dash/methods/firebase_methods.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dish_dash/core/widgets/icon_button.dart';
 import 'package:dish_dash/core/widgets/text_button.dart';
+import 'package:dish_dash/features/reservations/screens/reservation_page.dart';
 
 class SwipeScreen extends StatefulWidget {
   final String? matchName;
@@ -35,7 +37,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   final List<Map<String, dynamic>> _resData = [];
 
   // 🔹 Mock offline restaurant data
-  final List<Map<String, dynamic>> _mockRestaurants = [
+  final List<Map<String, dynamic>> mockRestaurants = [
     {
       "name": "Mock Bistro",
       "rating": 4.6,
@@ -90,7 +92,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
     _swipeItems.clear();
     _resData.clear();
 
-    for (var data in _mockRestaurants) {
+    for (var data in mockRestaurants) {
       _resData.add(data);
       _swipeItems.add(
         SwipeItem(
@@ -293,8 +295,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
                               ),
                               // color: Colors.white,
                               onPressed: () {
-                                debugPrint(
-                                  "Reservation tapped for ${data['name']}",
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ReservationPage(restaurantData: data),
+                                  ),
                                 );
                               },
                             ),

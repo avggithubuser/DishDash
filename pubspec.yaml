@@ -25,6 +25,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   url_launcher: ^6.3.2 
   firebase_app_check: ^0.4.1+1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

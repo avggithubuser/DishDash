@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBSwXE8KCw3c-hb4B9ILe6sLSvZih0Jp4g',
-    appId: '1:42191251749:android:c7c348bd9b6d2f817a92cc',
+    appId: '1:42191251749:android:dc45ef22b4fe7af27a92cc',
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
@@ -63,10 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
-    androidClientId:
-        '42191251749-0l8i9vbumaqe7v1820j2brudqiq301j2.apps.googleusercontent.com',
-    iosClientId:
-        '42191251749-evat4o82p5vptjqglpqm6p5o0aftro6r.apps.googleusercontent.com',
+    androidClientId: '42191251749-0l8i9vbumaqe7v1820j2brudqiq301j2.apps.googleusercontent.com',
+    iosClientId: '42191251749-evat4o82p5vptjqglpqm6p5o0aftro6r.apps.googleusercontent.com',
     iosBundleId: 'com.eat.dishDash',
   );
 
@@ -76,10 +74,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '42191251749',
     projectId: 'dishdash-84c1b',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
-    androidClientId:
-        '42191251749-0l8i9vbumaqe7v1820j2brudqiq301j2.apps.googleusercontent.com',
-    iosClientId:
-        '42191251749-6nt6mgr111e1ajb070cspksra3jv40h8.apps.googleusercontent.com',
+    androidClientId: '42191251749-0l8i9vbumaqe7v1820j2brudqiq301j2.apps.googleusercontent.com',
+    iosClientId: '42191251749-6nt6mgr111e1ajb070cspksra3jv40h8.apps.googleusercontent.com',
     iosBundleId: 'com.example.dishDash',
   );
 
@@ -91,4 +87,5 @@ class DefaultFirebaseOptions {
     authDomain: 'dishdash-84c1b.firebaseapp.com',
     storageBucket: 'dishdash-84c1b.firebasestorage.app',
   );
+
 }

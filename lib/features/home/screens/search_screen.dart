@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // 🔸 Commented out Firebase import for offline mode
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish_dash/features/home/screens/home_screen.dart';
@@ -191,7 +192,6 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
 
                           // 🔸 Commented out live Firebase Stream for offline use
-                          /*
                           StreamBuilder(
                             stream: FirebaseFirestore.instance
                                 .collection('restaurants')
@@ -204,9 +204,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                     if (value is List &&
                                         value.every((item) => item is String)) {
                                       allFilters.putIfAbsent(
-                                          key, () => <String>{});
+                                        key,
+                                        () => <String>{},
+                                      );
                                       allFilters[key]!.addAll(
-                                          value.cast<String>());
+                                        value.cast<String>(),
+                                      );
                                     }
                                   });
                                 });
@@ -221,36 +224,37 @@ class _SearchScreenState extends State<SearchScreen> {
                                         filterType: filterType,
                                         onSelectionChanged:
                                             (Set<String> selectedTags) {
-                                          setState(() {
-                                            selectedFilters[filterType] =
-                                                selectedTags;
-                                          });
-                                        },
+                                              setState(() {
+                                                selectedFilters[filterType] =
+                                                    selectedTags;
+                                              });
+                                            },
                                       ),
                                     );
                                   }).toList(),
                                 );
                               } else {
                                 return Center(
-                                  child: CircularProgressIndicator(),
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 );
                               }
                             },
                           ),
-                          */
 
                           // 🔹 Simple offline placeholder
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
-                            child: AutoSizeText(
-                              "(Offline mode — filters disabled)",
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ),
-
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(vertical: 10.h),
+                          //   child: AutoSizeText(
+                          //     "(Offline mode — filters disabled)",
+                          //     style: theme.textTheme.bodyMedium?.copyWith(
+                          //       color: Colors.grey,
+                          //       fontSize: 14.sp,
+                          //     ),
+                          //   ),
+                          // ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20.w),
                             child: SizedBox(
