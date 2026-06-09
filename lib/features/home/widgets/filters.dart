@@ -89,7 +89,7 @@ class _MyTagsState extends State<MyTags> {
         // ),
         border: Border.all(color: Colors.white.withOpacity(0.4), width: 1.2),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

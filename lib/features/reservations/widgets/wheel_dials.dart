@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Common text style for non-selected items
 TextStyle _itemStyle(bool selected) => GoogleFonts.montserrat(
-  fontSize: selected ? 22 : 17,
+  fontSize: selected ? 22.sp : 17.sp,
   fontWeight: selected ? FontWeight.bold : FontWeight.w500,
   color: selected ? Colors.black87 : Colors.grey.shade500,
 );
@@ -72,26 +74,31 @@ Widget guestWheelPicker({
 
   return _buildWheelContainer(
     title: title,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
+    child: ListView(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      // mainAxisSize: MainAxisSize.min,
       children: [
-        DynamicWheel(
-          items: items,
-          initialIndex: selectedValue - 1,
-          onSelected: (index) => onSelected(index + 1),
+        Padding(
+          padding: EdgeInsets.only(top: 5.h),
+          child: DynamicWheel(
+            items: items,
+            initialIndex: selectedValue - 1,
+            onSelected: (index) => onSelected(index + 1),
+          ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         if (onDone != null)
           ElevatedButton(
             onPressed: onDone,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blueAccent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.w),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
             ),
-            child: Text(
+            child: AutoSizeText(
               "Done",
               style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.w600,
@@ -115,42 +122,50 @@ Widget _buildWheelContainer({
   final double wheelHeight = itemExtent * visibleItemCount;
   const double lensHeight = itemExtent; // ✅ exactly 1 item tall
 
-  return Column(
-    mainAxisSize: MainAxisSize.min,
+  return ListView(
+    physics: NeverScrollableScrollPhysics(),
+
+    // mainAxisSize: MainAxisSize.min,
+    shrinkWrap: true,
     children: [
       if (title.isNotEmpty)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-          child: Text(
+        Center(
+          child: AutoSizeText(
+            textAlign: TextAlign.center,
             title,
             style: GoogleFonts.montserrat(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 20.sp,
               color: titleColor,
             ),
           ),
         ),
       SizedBox(
         height: wheelHeight,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // 🔹 Perfectly centered highlight lens (now exactly matches wheel)
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                height: lensHeight,
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.blueAccent.withOpacity(0.3)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // 🔹 Perfectly centered highlight lens (now exactly matches wheel)
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: lensHeight,
+                  margin: EdgeInsets.symmetric(horizontal: 8.w),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: Colors.blueAccent.withOpacity(0.3),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            // 🔹 Wheel
-            child,
-          ],
+              // 🔹 Wheel
+              child,
+            ],
+          ),
         ),
       ),
     ],
@@ -178,7 +193,7 @@ class _DynamicWheelState extends State<DynamicWheel> {
   late FixedExtentScrollController _controller;
   late int _currentIndex;
 
-  static const double _itemExtent = 48;
+  static double _itemExtent = 48.h;
 
   @override
   void initState() {
@@ -210,7 +225,7 @@ class _DynamicWheelState extends State<DynamicWheel> {
               child: AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 120),
                 style: GoogleFonts.montserrat(
-                  fontSize: isSelected ? 22 : 17,
+                  fontSize: isSelected ? 22.sp : 17.sp,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   color: isSelected ? Colors.black87 : Colors.grey.shade500,
                 ),

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dish_dash/features/auth/methods/auth_methods.dart';
 import 'package:dish_dash/features/auth/widgets/button.dart';
 import 'package:dish_dash/features/auth/widgets/input_field.dart';
@@ -36,7 +37,7 @@ class _EmailLoginInState extends State<EmailLoginIn> {
               Column(
                 children: [
                   Center(
-                    child: Text(
+                    child: AutoSizeText(
                       "DishDash.",
                       style: GoogleFonts.fraunces(
                         fontSize: MediaQuery.of(context).size.height * 0.05,
@@ -47,7 +48,7 @@ class _EmailLoginInState extends State<EmailLoginIn> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
-                  Text(
+                  AutoSizeText(
                     "WELCOME BACK!",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.fraunces(

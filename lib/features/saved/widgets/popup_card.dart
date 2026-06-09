@@ -1,12 +1,11 @@
 import 'dart:ui'; // for ImageFilter.blur
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:dish_dash/core/widgets/text_button.dart';
-import 'package:dish_dash/core/widgets/icon_button.dart';
 
 Widget restaurantPopupCard(
   BuildContext context,
@@ -16,7 +15,6 @@ Widget restaurantPopupCard(
   return Center(
     child: SizedBox(
       width: 320.w,
-      height: 540.h,
       child: Material(
         color: Colors.transparent,
         child: Container(
@@ -44,29 +42,38 @@ Widget restaurantPopupCard(
                     width: 1.2.w,
                   ),
                 ),
-                padding: EdgeInsets.all(12.w),
+                padding: EdgeInsets.all(15.w),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Close button
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        icon: Icon(Icons.close, size: 24.sp),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16.w),
-                      child: Image.network(
-                        data['image'] ?? '',
-                        width: double.infinity,
-                        height: 250.h,
-                        fit: BoxFit.cover,
-                      ),
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16.w),
+                          child: Image.network(
+                            data['imageUrl'] ?? '',
+                            width: double.infinity,
+                            height: 250.h,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              size: 24.sp,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 16.h),
-                    Text(
+                    AutoSizeText(
                       data['name'] ?? "Unknown",
                       style: GoogleFonts.montserrat(
                         fontSize: 20.sp,
@@ -74,74 +81,92 @@ Widget restaurantPopupCard(
                         color: colorScheme.primary,
                       ),
                     ),
-                    SizedBox(height: 8.h),
-                    // Menu button and icons in same row
-                    Row(
-                      children: [
-                        NeonButton(
-                          text: "menu",
-                          color: Colors.pink,
-                          horizontalPadding: 16,
-                          verticalPadding: 6,
-                          onPressed: () {
-                            // handle menu tap
-                          },
-                        ),
-                        SizedBox(width: 5.w),
-                        if (data['hasFoodpanda'] == true)
-                          IconNeonButton(
-                            icon: SizedBox(
-                              height: 20.h,
-                              child: Image.asset("assets/foodpanda.png"),
+                    // foodpanda, instagram, res, menu, contact
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 13.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          if (data['instagram'] != null &&
+                              data['instagram'].toString().isNotEmpty)
+                            GestureDetector(
+                              onTap: () async {
+                                final url = data['instagram'];
+                                if (url != null && url.toString().isNotEmpty) {
+                                  debugPrint("Opening Instagram: $url");
+                                  await launchUrl(Uri.parse(url));
+                                }
+                              },
+                              child: FaIcon(
+                                FontAwesomeIcons.instagram,
+                                color: Colors.pink,
+                              ),
                             ),
-                            onPressed: () async {
-                              final url = data['foodpandaUrl'] ?? '';
-                              if (url.isNotEmpty) {
-                                await launchUrl(Uri.parse(url));
-                              }
-                            },
-                          ),
-                        SizedBox(width: 5.w),
-                        if (data['instagram'] != null &&
-                            data['instagram'].toString().isNotEmpty)
-                          IconNeonButton(
-                            icon: FaIcon(
-                              FontAwesomeIcons.instagram,
-                              color: Colors.white,
+                          //
+                          SizedBox(width: 15.w),
+                          //
+                          GestureDetector(
+                            child: Icon(
+                              Icons.menu_book_outlined,
+                              color: Colors.pink,
                             ),
-                            bgcolor: Colors.pink,
 
-                            onPressed: () async {
-                              final url = data['instagram'];
-                              if (url != null && url.isNotEmpty) {
-                                await launchUrl(Uri.parse(url));
+                            onTap: () {
+                              // handle menu tap
+                            },
+                          ),
+                          //
+                          SizedBox(width: 15.w),
+                          GestureDetector(
+                            onTap: () async {
+                              final phoneNumber = data['contact'][0];
+                              if (phoneNumber != null &&
+                                  phoneNumber.toString().isNotEmpty) {
+                                debugPrint("Calling: $phoneNumber");
+                                await launchUrl(
+                                  Uri(scheme: 'tel', path: phoneNumber),
+                                );
                               }
                             },
-                          ),
-                        SizedBox(width: 5.w),
-                        if (data['hasReservations'] == true)
-                          IconNeonButton(
-                            icon: Icon(
-                              Icons.calendar_today,
-                              color: Colors.white,
+                            child: FaIcon(
+                              FontAwesomeIcons.phone,
+                              size: 20.w,
+                              color: Colors.pink,
                             ),
-                            onPressed: () {
-                              debugPrint(
-                                "Reservation tapped for ${data['name']}",
-                              );
-                            },
                           ),
-                      ],
+                          SizedBox(width: 15.w),
+
+                          if (data['hasFoodpanda'] == true)
+                            GestureDetector(
+                              child: SizedBox(
+                                height: 20.w,
+                                child: Image.asset(
+                                  color: Colors.pink,
+
+                                  "assets/foodpanda.png",
+                                ),
+                              ),
+                              onTap: () async {
+                                final url = data['foodpandaUrl'] ?? '';
+                                if (url.isNotEmpty) {
+                                  debugPrint("Opening Foodpanda: $url");
+                                  await launchUrl(Uri.parse(url));
+                                }
+                              },
+                            ),
+                          //
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 8.h),
+                    // rating
                     RatingBarIndicator(
-                      rating: data['rating'] ?? 0.0,
+                      rating: double.tryParse(data['rating']) ?? 0.0,
                       itemBuilder: (context, _) =>
                           const Icon(Icons.star, color: Colors.amber),
                       itemSize: 24.sp,
                     ),
                     SizedBox(height: 8.h),
-                    Text(
+                    AutoSizeText(
                       data['desc'] ?? "No description.",
                       maxLines: 4,
                       style: GoogleFonts.montserrat(

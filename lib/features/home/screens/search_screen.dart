@@ -7,8 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dish_dash/features/home/screens/home_screen.dart';
 import 'package:dish_dash/features/home/widgets/filters.dart';
 import 'package:dish_dash/features/home/widgets/price_tags.dart';
+import 'package:dish_dash/features/home/widgets/radius_slider.dart';
+import 'package:dish_dash/methods/location_shi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({super.key});
@@ -20,31 +23,23 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  List<String> restaurants = [
-    // 🔸 Temporary offline mock data (you can remove when Firebase is back)
-    "Kababjees",
-    "Okra",
-    "Xander’s",
-    "Côte Rôtie",
-    "Ginsoy",
-  ];
+  List<String> restaurants = [];
 
   List<String> matchingSearches = [];
   String searchedRestaurant = '';
   bool showSearchSuggestions = false;
 
-  // 🔸 Commented out Firestore fetching for offline mode
-  /*
   getRestaurantNames() async {
     restaurants.clear();
-    QuerySnapshot<Map<String, dynamic>> allRestaurants =
-        await FirebaseFirestore.instance.collection('restaurants').get();
+    QuerySnapshot<Map<String, dynamic>> allRestaurants = await FirebaseFirestore
+        .instance
+        .collection('restaurants')
+        .get();
     allRestaurants.docs.forEach((doc) {
       Map<String, dynamic> docData = doc.data();
       restaurants.add(docData['name']);
     });
   }
-  */
 
   List<String> searchData(String value) {
     String searchVal = value.toString().toLowerCase().replaceAll(
@@ -80,28 +75,26 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void onSubmitted() {}
-
   Map<String, Set<String>> allFilters = {};
   Map<String, Set<String>> selectedFilters = {};
   List<String> priceTags = [];
-
+  double? radius;
   @override
   void initState() {
     super.initState();
-    // 🔸 Commented out Firebase fetching
-    // getRestaurantNames();
+    getRestaurantNames();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final background = theme.scaffoldBackgroundColor;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: colorScheme.primary,
+        backgroundColor: Color.fromRGBO(110, 146, 160, 1),
         iconTheme: IconThemeData(color: Colors.white),
         toolbarHeight: 80.h,
         title: Row(
@@ -141,7 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       border: InputBorder.none,
                     ),
                     onChanged: (value) => onChanged(value),
-                    onSubmitted: (value) => onSubmitted(),
+                    // onSubmitted: (value) => searchData(),
                   ),
                 ),
               ),
@@ -149,162 +142,167 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
       ),
+      //
+      //apply filters
+      //
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(left: 40.w, right: 10.w, bottom: 20.h),
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.primary.withOpacity(0.8),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+            ),
+            onPressed: () async {
+              // apply filters
+
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return HomeScreen(
+                      searchedRestaurant: searchedRestaurant,
+                      priceTags: priceTags,
+                      selectedFilters: selectedFilters,
+                      radius: radius ?? 50,
+                    );
+                  },
+                ),
+                (Route<dynamic> route) => false,
+              );
+              // } else {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(
+              //       content: AutoSizeText('Please allow Location Services'),
+              //     ),
+              //   );
+              // }
+            },
+            child: AutoSizeText("Apply"),
+          ),
+        ),
+      ),
+
+      //
       body: ListView(
+        shrinkWrap: true,
         children: [
           !showSearchSuggestions
-              ? SizedBox(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 10.h,
-                            ),
-                            child: Container(
-                              child: AutoSizeText(
-                                "Filter by:  ",
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 25.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
+              ? SingleChildScrollView(
+                  child: SizedBox(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20.w,
+                                vertical: 10.h,
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 10.h,
-                            ),
-                            child: Container(
-                              child: AutoSizeText(
-                                "location slider here",
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          // 🔸 Commented out live Firebase Stream for offline use
-                          StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('restaurants')
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                snapshot.data!.docs.forEach((doc) {
-                                  var data = doc.data();
-                                  data.forEach((key, value) {
-                                    if (value is List &&
-                                        value.every((item) => item is String)) {
-                                      allFilters.putIfAbsent(
-                                        key,
-                                        () => <String>{},
-                                      );
-                                      allFilters[key]!.addAll(
-                                        value.cast<String>(),
-                                      );
-                                    }
-                                  });
-                                });
-
-                                return Column(
-                                  children: allFilters.entries.map((entry) {
-                                    final filterType = entry.key;
-                                    final tagsList = entry.value.toList();
-                                    return SizedBox(
-                                      child: MyTags(
-                                        tags: tagsList,
-                                        filterType: filterType,
-                                        onSelectionChanged:
-                                            (Set<String> selectedTags) {
-                                              setState(() {
-                                                selectedFilters[filterType] =
-                                                    selectedTags;
-                                              });
-                                            },
-                                      ),
-                                    );
-                                  }).toList(),
-                                );
-                              } else {
-                                return Center(
-                                  child: Text(
-                                    "",
-                                    style: TextStyle(color: Colors.black),
+                              child: SizedBox(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
                                   ),
-                                );
-                              }
-                            },
-                          ),
-
-                          // 🔹 Simple offline placeholder
-                          // Padding(
-                          //   padding: EdgeInsets.symmetric(vertical: 10.h),
-                          //   child: AutoSizeText(
-                          //     "(Offline mode — filters disabled)",
-                          //     style: theme.textTheme.bodyMedium?.copyWith(
-                          //       color: Colors.grey,
-                          //       fontSize: 14.sp,
-                          //     ),
-                          //   ),
-                          // ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: SizedBox(
-                              child: PriceTagSlider(
-                                onPriceChanged: (List<String> priceRange) {
+                                  child: PriceTagSlider(
+                                    onPriceChanged: (List<String> priceRange) {
+                                      setState(() {
+                                        priceTags = priceRange;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 30.w,
+                                vertical: 10.h,
+                              ),
+                              child: RadiusSlider(
+                                onRadiusChanged: (radius1) {
                                   setState(() {
-                                    priceTags = priceRange;
+                                    radius = radius1 as double;
                                   });
                                 },
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: colorScheme.primary.withOpacity(
-                                0.8,
-                              ),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 14.h),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return HomeScreen(
-                                      searchedRestaurant: searchedRestaurant,
-                                      priceTags: priceTags,
-                                      selectedFilters: selectedFilters,
-                                    );
-                                  },
-                                ),
-                                (Route<dynamic> route) => false,
-                              );
 
-                              print(selectedFilters);
-                            },
-                            child: AutoSizeText("Apply"),
-                          ),
+                            StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('restaurants')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  const allowedKeys = {
+                                    'ambience',
+                                    'food',
+                                    'occasion',
+                                  };
+
+                                  snapshot.data!.docs.forEach((doc) {
+                                    var data = doc.data();
+                                    data.forEach((key, value) {
+                                      if (allowedKeys.contains(key) &&
+                                          value is List &&
+                                          value.every(
+                                            (item) => item is String,
+                                          )) {
+                                        allFilters.putIfAbsent(
+                                          key,
+                                          () => <String>{},
+                                        );
+                                        allFilters[key]!.addAll(
+                                          value.cast<String>(),
+                                        );
+                                      }
+                                    });
+                                  });
+                                  return Column(
+                                    children: [
+                                      Column(
+                                        children: allFilters.entries.map((
+                                          entry,
+                                        ) {
+                                          final filterType = entry.key;
+                                          final tagsList = entry.value.toList();
+                                          return SizedBox(
+                                            child: MyTags(
+                                              tags: tagsList,
+                                              filterType: filterType,
+                                              onSelectionChanged:
+                                                  (Set<String> selectedTags) {
+                                                    setState(() {
+                                                      selectedFilters[filterType] =
+                                                          selectedTags;
+                                                    });
+                                                  },
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                      SizedBox(height: 200),
+                                    ],
+                                  );
+                                } else {
+                                  return Center(
+                                    child: Text(
+                                      "loading ... ",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )
               : Column(
@@ -336,15 +334,19 @@ class _SearchScreenState extends State<SearchScreen> {
                                   fontSize: 16.sp,
                                 ),
                               ),
-                              onTap: () {
-                                setState(() {
-                                  searchedRestaurant = matchingSearches[index];
-                                });
+                              onTap: () async {
                                 Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return HomeScreen(
-                                        searchedRestaurant: searchedRestaurant,
+                                        searchedRestaurant:
+                                            matchingSearches[index],
+                                        priceTags: priceTags,
+                                        selectedFilters: selectedFilters,
+                                        radius:
+                                            matchingSearches[index].isNotEmpty
+                                            ? null
+                                            : radius, // null if searching by name
                                       );
                                     },
                                   ),

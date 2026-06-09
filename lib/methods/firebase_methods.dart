@@ -1,38 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dish_dash/data/models/dishdash_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyMethods {
-  // right swipes
-  rightSwipe(String restaurantName) async {
+  // liked
+  likeRestaurant(BuildContext context, String restaurantName) async {
     try {
-      String? userID = await FirebaseAuth.instance.currentUser!.uid;
-      await FirebaseFirestore.instance.collection("users").doc(userID).update({
-        "rightSwipes": FieldValue.arrayUnion([restaurantName]),
+      String? email = FirebaseAuth.instance.currentUser!.email;
+      await FirebaseFirestore.instance.collection("users").doc(email).update({
+        "liked": FieldValue.arrayUnion([restaurantName]),
       });
+
+      // Optional: remove from local list immediately
+      final db = Provider.of<DishDashDatabase>(context, listen: false);
+      // db.removeRestaurant(restaurantName);
     } catch (e) {
       print(e.toString());
     }
   }
 
-  // left swipes
-  leftSwipe(String restaurantName) async {
+  // reject (left swipe)
+  leftSwipe(BuildContext context, String restaurantName) async {
     try {
-      String? userID = await FirebaseAuth.instance.currentUser!.uid;
-      await FirebaseFirestore.instance.collection("users").doc(userID).update({
-        "leftSwipes": FieldValue.arrayUnion([restaurantName]),
+      String? email = FirebaseAuth.instance.currentUser!.email;
+      await FirebaseFirestore.instance.collection("users").doc(email).update({
+        "rejected": FieldValue.arrayUnion([restaurantName]),
       });
+
+      // Remove restaurant from local list
+      final db = Provider.of<DishDashDatabase>(context, listen: false);
+      // db.removeRestaurant(restaurantName);
     } catch (e) {
       print(e.toString());
     }
   }
 
-  // super Likes omg
-  favourites(String restaurantName) async {
+  // saved (superlike)
+  saveRestaurant(BuildContext context, String restaurantName) async {
     try {
-      String? userID = await FirebaseAuth.instance.currentUser!.uid;
-      await FirebaseFirestore.instance.collection("users").doc(userID).update({
-        "favourites": FieldValue.arrayUnion([restaurantName]),
+      String? email = FirebaseAuth.instance.currentUser!.email;
+      await FirebaseFirestore.instance.collection("users").doc(email).update({
+        "saved": FieldValue.arrayUnion([restaurantName]),
       });
+
+      // Optional: remove from local list immediately
+      final db = Provider.of<DishDashDatabase>(context, listen: false);
+      // db.removeRestaurant(restaurantName);
     } catch (e) {
       print(e.toString());
     }

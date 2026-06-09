@@ -27,144 +27,137 @@ class _EmailSignUpState extends State<EmailSignUp> {
       appBar: AppBar(backgroundColor: Colors.transparent),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.02,
-              horizontal: MediaQuery.of(context).size.width * 0.07,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: AutoSizeText(
-                        "DishDash.",
-                        style: GoogleFonts.fraunces(
-                          fontSize: MediaQuery.of(context).size.height * 0.03,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-
-                    AutoSizeText(
-                      "WELCOME",
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.height * 0.02,
+            horizontal: MediaQuery.of(context).size.width * 0.07,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: AutoSizeText(
+                      "DishDash.",
                       style: GoogleFonts.fraunces(
-                        color: Theme.of(context).textTheme.headlineLarge!.color,
-                        fontSize: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium!.fontSize,
+                        fontSize: MediaQuery.of(context).size.height * 0.03,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
 
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          MyTextField(
-                            controller: usernameController,
-                            obscureText: false,
-                            labelText: "Username",
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.010,
-                          ),
-                          MyTextField(
-                            controller: emailController,
-                            obscureText: false,
-                            labelText: "Email",
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.010,
-                          ),
-                          MyTextField(
-                            controller: passwordController,
-                            obscureText: hidePas,
-                            labelText: "Password",
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  hidePas = !hidePas;
-                                });
-                              },
-                              icon: Icon(
-                                hidePas
-                                    ? Icons.remove_red_eye_outlined
-                                    : Icons.remove_red_eye,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.010,
-                          ),
-                          MyTextField(
-                            controller: confirmPwController,
-                            obscureText: hideConfirmPas,
-                            labelText: "Confirm Password",
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  hideConfirmPas = !hideConfirmPas;
-                                });
-                              },
-                              icon: Icon(
-                                hideConfirmPas
-                                    ? Icons.remove_red_eye_outlined
-                                    : Icons.remove_red_eye,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                  AutoSizeText(
+                    "WELCOME",
+                    style: GoogleFonts.fraunces(
+                      color: Theme.of(context).textTheme.headlineLarge!.color,
+                      fontSize: Theme.of(
+                        context,
+                      ).textTheme.headlineMedium!.fontSize,
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.080,
-                    ),
-                    MyButton(
-                      title: "Register",
-                      onTap: () async {
-                        await Authentication().emailSignUp(
-                          usernameController.text,
-                          emailController.text,
-                          passwordController.text,
-                          confirmPwController.text,
-                          context,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AutoSizeText(
-                      "Already have an account?",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.headlineLarge!.color,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: widget.onTap,
-                      child: AutoSizeText(
-                        " Login now!",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(
-                            context,
-                          ).textTheme.headlineLarge!.color,
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        MyTextField(
+                          controller: usernameController,
+                          obscureText: false,
+                          labelText: "Username",
                         ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.010,
+                        ),
+                        MyTextField(
+                          controller: emailController,
+                          obscureText: false,
+                          labelText: "Email",
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.010,
+                        ),
+                        MyTextField(
+                          controller: passwordController,
+                          obscureText: hidePas,
+                          labelText: "Password",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                hidePas = !hidePas;
+                              });
+                            },
+                            icon: Icon(
+                              hidePas
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.010,
+                        ),
+                        MyTextField(
+                          controller: confirmPwController,
+                          obscureText: hideConfirmPas,
+                          labelText: "Confirm Password",
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                hideConfirmPas = !hideConfirmPas;
+                              });
+                            },
+                            icon: Icon(
+                              hideConfirmPas
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.080),
+                  MyButton(
+                    title: "Register",
+                    onTap: () async {
+                      await Authentication().emailSignUp(
+                        usernameController.text,
+                        emailController.text,
+                        passwordController.text,
+                        confirmPwController.text,
+                        context,
+                      );
+                    },
+                  ),
+                ],
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AutoSizeText(
+                    "Already have an account?",
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headlineLarge!.color,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: AutoSizeText(
+                      " Login now!",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.headlineLarge!.color,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

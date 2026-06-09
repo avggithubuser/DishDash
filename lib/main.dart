@@ -1,9 +1,7 @@
 import 'dart:io';
+import 'package:dish_dash/data/models/dishdash_database.dart';
 import 'package:dish_dash/features/auth/methods/auth_page.dart';
-import 'package:dish_dash/features/swipe/screens/swipe_screen.dart';
-import 'package:dish_dash/features/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dish_dash/core/services/theme_service.dart';
 import 'package:dish_dash/firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,11 +37,24 @@ Future<void> main() async {
           '42191251749-t1cg6ohn7siht34pcl694hcg44fvnunj.apps.googleusercontent.com',
     );
 
-    runApp(const ProviderScope(child: DishDashApp()));
+    runApp(
+      ChangeNotifierProvider(
+        create: (context) => DishDashDatabase(),
+        child: DishDashApp(),
+      ),
+    );
   } catch (e, stack) {
     print('Error during app initialization: $e');
     print(stack);
   }
+}
+
+// get screen size
+
+Size _designSize() {
+  final mq = WidgetsBinding.instance.platformDispatcher.views.first;
+  final size = mq.physicalSize / mq.devicePixelRatio;
+  return Size(size.width, size.height);
 }
 
 class DishDashApp extends StatelessWidget {
@@ -54,7 +66,8 @@ class DishDashApp extends StatelessWidget {
       valueListenable: ThemeService.notifier,
       builder: (_, mode, __) {
         return ScreenUtilInit(
-          designSize: const Size(390, 844),
+          designSize: _designSize(),
+          // const Size(390, 844),
           minTextAdapt: true,
           builder: (context, child) {
             return MaterialApp(
@@ -62,7 +75,7 @@ class DishDashApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeService.lightTheme,
               themeMode: mode,
-              home: HomeScreen(),
+              home: AuthPage(),
             );
           },
         );

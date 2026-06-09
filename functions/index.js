@@ -18,7 +18,6 @@ exports.createUserIfNotExists = onCall(async (request) => {
     throw new Error("User must be authenticated to call this function.");
   }
 
-  const uid = auth.uid;
   const {username, email} = data;
 
   if (!username || !email) {
@@ -26,22 +25,22 @@ exports.createUserIfNotExists = onCall(async (request) => {
   }
 
   try {
-    const userDoc = await db.collection("users").doc(uid).get();
+    const userDoc = await db.collection("users").doc(email).get();
 
     if (!userDoc.exists) {
-      await db.collection("users").doc(uid).set({
+      await db.collection("users").doc(email).set({
         username,
         email,
-        favourites: [],
-        rightSwipes: [],
-        leftSwipes: [],
+        saved: [],
+        liked: [],
+        rejected: [],
         reservationsHistory: [],
         currentReservations: [],
       });
-      logger.info(`User document created for UID: ${uid}`);
+      logger.info(`User document created for email: ${email}`);
       return {message: "User document created"};
     } else {
-      logger.info(`User document already exists for UID: ${uid}`);
+      logger.info(`User document already exists for email: ${email}`);
       return {message: "User document already exists"};
     }
   } catch (error) {

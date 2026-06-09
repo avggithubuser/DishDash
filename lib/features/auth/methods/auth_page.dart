@@ -1,7 +1,9 @@
+import 'package:dish_dash/data/models/dishdash_database.dart';
 import 'package:dish_dash/features/auth/screens/sign_in_screen.dart';
 import 'package:dish_dash/features/home/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -12,12 +14,11 @@ class AuthPage extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // user logged in
           if (snapshot.hasData) {
+            // user logged in
             return HomeScreen();
-          }
-          // not logged in
-          else {
+          } else {
+            // not logged in
             return const LoginScreen();
           }
         },

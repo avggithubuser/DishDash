@@ -43,15 +43,18 @@ class _ReservationPageState extends State<ReservationPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.h)),
       ),
       builder: (_) {
-        return guestWheelPicker(
-          title: "Select Guests",
-          itemCount: 30,
-          selectedValue: _selectedGuests,
-          onSelected: (index) => setState(() => _selectedGuests = index + 1),
+        return Padding(
+          padding: EdgeInsets.only(top: 9.0),
+          child: guestWheelPicker(
+            title: "Select Guests",
+            itemCount: 30,
+            selectedValue: _selectedGuests,
+            onSelected: (index) => setState(() => _selectedGuests = index),
+          ),
         );
       },
     );
@@ -66,7 +69,7 @@ class _ReservationPageState extends State<ReservationPage> {
       ),
       builder: (_) {
         return SizedBox(
-          height: 320,
+          height: 320.h,
           child: Column(
             children: [
               const SizedBox(height: 12),

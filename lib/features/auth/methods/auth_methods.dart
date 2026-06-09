@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:dish_dash/data/models/dishdash_database.dart';
 import 'package:dish_dash/features/auth/methods/auth_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,11 @@ class Authentication {
         email: email,
         password: password,
       );
+      // load data
+      await DishDashDatabase().loadUserData();
+      //
       Navigator.of(context).pop();
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => AuthPage()),
         (Route<dynamic> route) => false,
@@ -72,16 +77,10 @@ class Authentication {
             .call(<String, dynamic>{'username': username, 'email': email});
 
         print(result.data['message']);
-        // String? uid = FirebaseAuth.instance.currentUser!.uid;
-        // await FirebaseFirestore.instance.collection("users").doc(uid).set({
-        //   "username": username,
-        //   "email": email,
-        //   "favourites": [],
-        //   "rightSwipes": [],
-        //   "leftSwipes": [],
-        //   "reservationsHistory": [],
-        //   "currentReservations": [],
-        // });
+        //
+        // load data
+        await DishDashDatabase().loadUserData();
+        //
         Navigator.of(context).pop();
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => AuthPage()),
@@ -234,6 +233,9 @@ class Authentication {
                 'username': user.displayName,
                 'email': user.email,
               });
+          // load data
+          await DishDashDatabase().loadUserData();
+          //
 
           print(result.data['message']);
         }

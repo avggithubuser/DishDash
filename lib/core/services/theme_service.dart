@@ -23,14 +23,13 @@ class ThemeService {
   static bool isDark(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 
-  // LIGHT
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: const Color.fromARGB(255, 255, 252, 237),
-    cardColor: const Color.fromRGBO(182, 119, 29, 1),
+    // cardColor: const Color.fromRGBO(182, 119, 29, 1),
     colorScheme: const ColorScheme.light(
-      primary: Color.fromRGBO(182, 119, 29, 1),
-      secondary: Color.fromRGBO(182, 119, 29, 1),
+      primary: Color.fromRGBO(64, 123, 146, 1),
+      secondary: Color.fromRGBO(144, 197, 189, 1),
     ),
     textTheme: TextTheme(
       titleLarge: GoogleFonts.fraunces(
@@ -66,6 +65,50 @@ class ThemeService {
       ),
     ),
   );
+
+  // LIGHT
+  // static final ThemeData lightTheme = ThemeData(
+  //   brightness: Brightness.light,
+  //   scaffoldBackgroundColor: const Color.fromARGB(255, 255, 252, 237),
+  //   cardColor: const Color.fromRGBO(182, 119, 29, 1),
+  //   colorScheme: const ColorScheme.light(
+  //     primary: Color.fromRGBO(182, 119, 29, 1),
+  //     secondary: Color.fromRGBO(182, 119, 29, 1),
+  //   ),
+  //   textTheme: TextTheme(
+  //     titleLarge: GoogleFonts.fraunces(
+  //       fontSize: 46.sp,
+  //       fontWeight: FontWeight.bold,
+  //       color: Color.fromRGBO(200, 100, 100, 1),
+  //     ),
+  //     displayLarge: GoogleFonts.fraunces(
+  //       fontSize: 30.sp,
+  //       fontWeight: FontWeight.bold,
+  //       color: Color.fromRGBO(246, 239, 210, 1),
+  //     ),
+  //     titleMedium: GoogleFonts.fraunces(
+  //       fontSize: 22.sp,
+  //       fontWeight: FontWeight.w600,
+  //       color: Color.fromRGBO(246, 239, 210, 1),
+  //     ),
+  //     bodyLarge: GoogleFonts.inter(
+  //       fontSize: 18.sp,
+  //       fontWeight: FontWeight.w500,
+  //       color: Color.fromRGBO(246, 239, 210, 1),
+  //     ),
+  //     bodyMedium: GoogleFonts.inter(
+  //       fontSize: 12.sp,
+  //       fontWeight: FontWeight.w400,
+  //       color: Colors.white,
+  //     ),
+  //   ),
+  //   cardTheme: const CardThemeData(
+  //     elevation: 8,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+  //     ),
+  //   ),
+  // );
 
   //   // DARK
   //   static final ThemeData darkTheme = ThemeData(
